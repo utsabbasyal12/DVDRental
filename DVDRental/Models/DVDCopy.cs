@@ -3,8 +3,8 @@
     public class DVDCopy
     {
         public int CopyNumber { get; set; } 
-        public string? DatePurchased { get; set; }
-        public virtual DVDTitle?  DVDTitle { get; set; }  
+        public DateTime DatePurchased { get; set; }
+        public DVDTitle?  DVDTitle { get; set; }  
     }
 }
   

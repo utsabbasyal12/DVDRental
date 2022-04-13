@@ -4,11 +4,11 @@
     {
         public int DVDNumber { get; set; }
         public string? Title { get; set; }
-        public string? DateRelease { get; set; }    
-        public string? StandardCharge { get; set; }
-        public string? PenaltyCharge { get; set; }
-        public virtual DVDCategory? DVDCategory{ get; set; }
-        public virtual Studio? Studio { get; set; }
-        public virtual Producer? Producer { get; set; }
+        public DateTime DateRelease { get; set; }    
+        public decimal StandardCharge { get; set; }
+        public decimal PenaltyCharge { get; set; }
+        public DVDCategory? DVDCategory{ get; set; }
+        public Studio? Studio { get; set; }
+        public Producer? Producer { get; set; }
     }
 }

@@ -4,6 +4,6 @@
     {
         public int MembershipCategoryNumber { get; set; }   
         public string? MembershipCategoryDescription { get; set; }
-        public string? MembershipCategoryTotalLoans { get; set; }
+        public int MembershipCategoryTotalLoans { get; set; }
     }
 }

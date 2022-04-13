@@ -3,8 +3,8 @@
     public class LoanType
     {
         public int LoanTypeNumber { get; set; }
-        public string? LoanCategory { get; set; }
-        public string? LoanDuration { get; set; }   
+        public IEnumerable<string>? LoanCategory { get; set; }
+        public int LoanDuration { get; set; }   
 
 
     }
