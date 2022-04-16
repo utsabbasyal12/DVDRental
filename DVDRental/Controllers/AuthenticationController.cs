@@ -73,7 +73,7 @@ namespace DVDRental.Controllers
                 ViewBag.User = userDetails;
                 return RedirectToAction("UserDetails", ViewBag.User);
             }
-            return RedirectToAction("Home");
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Authentication/RegisterUser

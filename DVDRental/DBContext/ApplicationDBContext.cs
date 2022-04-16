@@ -14,6 +14,5 @@ namespace DVDRental.DBContext
         {
             base.OnModelCreating(builder);
         }
-        public DbSet<DVDRental.Models.UserRegisterModel> UserRegisterModel { get; set; }
     }
 }
