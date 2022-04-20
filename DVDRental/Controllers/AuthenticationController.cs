@@ -12,17 +12,22 @@ namespace DVDRental.Controllers
 {
     public class AuthenticationController : Controller
     {
+
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IConfiguration _configuration;
+
 
         public AuthenticationController(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
+            SignInManager<IdentityUser> signInManager,
             IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
             _configuration = configuration;
         }
         public IActionResult Index()
@@ -46,6 +51,7 @@ namespace DVDRental.Controllers
         public async Task<IActionResult> Login(UserLoginModel loginModel)
         {
             var user = await _userManager.FindByNameAsync(loginModel.Username);
+               
             if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
