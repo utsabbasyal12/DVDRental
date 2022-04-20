@@ -77,14 +77,14 @@ namespace DVDRental.Controllers
         }
 
         // GET: Authentication/RegisterUser
-        public IActionResult Register()
+        public IActionResult RegisterUser()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([FromBody] UserRegisterModel model)
+        public async Task<IActionResult> RegisterUser(UserRegisterModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
