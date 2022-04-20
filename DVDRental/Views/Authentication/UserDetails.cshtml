@@ -11,6 +11,13 @@
     <meta name="viewport" content="width=device-width" />
     <title>UserDetails</title>
 </head>
+<script>
+    var url = window.location;
+var access_token = new URLSearchParams(url.search).get('Token');
+console.log('hello');
+localStorage.setItem('Token', access_token);
+console.log(access_token);
+</script>
 <body>
 
 <div>
