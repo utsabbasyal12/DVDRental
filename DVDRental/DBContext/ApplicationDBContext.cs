@@ -13,6 +13,7 @@ namespace DVDRental.DBContext
         {
         }
         public DbSet<Actor> Actors { get; set; }
+        public DbSet<Studio> Studios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

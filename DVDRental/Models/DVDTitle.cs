@@ -1,7 +1,10 @@
-﻿namespace DVDRental.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DVDRental.Models
 {
     public class DVDTitle
     {
+        [Key]
         public int DVDNumber { get; set; }
         public string? Title { get; set; }
         public DateTime DateRelease { get; set; }    

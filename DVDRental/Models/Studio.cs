@@ -1,8 +1,12 @@
-﻿namespace DVDRental.Models
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace DVDRental.Models
 {
     public class Studio
     {
-        public int StudioNumber { get; set; }
+        [Key]
+        public int StudioId { get; set; }
         public string? StudioName { get; set; }
     }
 }

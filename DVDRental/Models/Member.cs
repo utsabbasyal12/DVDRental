@@ -1,7 +1,10 @@
-﻿namespace DVDRental.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DVDRental.Models
 {
     public class Member
     {
+        [Key]
         public int MemberNumber { get; set; }
         public string? MemberLastName { get; set; }
         public string? MemberFirstName { get; set; }

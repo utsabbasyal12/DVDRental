@@ -1,7 +1,10 @@
-﻿namespace DVDRental.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DVDRental.Models
 {
     public class Loan
     {
+        [Key]
         public int LoanNumber { get; set; }
         public LoanType? LoanType { get; set; }
         public DVDCopy? DVDCopy { get; set; }
