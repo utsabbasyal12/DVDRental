@@ -13,5 +13,6 @@ namespace DVDRental.Models
         public DVDCategory? DVDCategory{ get; set; }
         public Studio? Studio { get; set; }
         public Producer? Producer { get; set; }
+        public List<CastMember>? CastMembers { get; set; } 
     }
 }

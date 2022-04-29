@@ -14,10 +14,24 @@ namespace DVDRental.DBContext
         }
         public DbSet<Actor> Actors { get; set; }
         public DbSet<Studio> Studios { get; set; }
+        public DbSet<CastMember> CastMembers { get; set; }
+        public DbSet<Producer> Producers { get; set; }
+        public DbSet<DVDCategory> DVDCategory { get; set; }
+        public DbSet<DVDTitle> DVDTitles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<CastMember>()
+                .HasOne(a => a.Actor)
+                .WithMany(ab => ab.CastMembers)
+                .HasForeignKey(a => a.ActorId);
+
+            builder.Entity<CastMember>()
+                .HasOne(a => a.DVDTitle)
+                .WithMany(ab => ab.CastMembers)
+                .HasForeignKey(a => a.DVDNumber);
+
         }
     }
 }
