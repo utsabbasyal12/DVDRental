@@ -18,6 +18,12 @@ namespace DVDRental.DBContext
         public DbSet<Producer> Producers { get; set; }
         public DbSet<DVDCategory> DVDCategory { get; set; }
         public DbSet<DVDTitle> DVDTitles { get; set; }
+        public DbSet<DVDCopy> DVDCopies { get; set; }
+        public DbSet<Loan> Loans { get; set; }  
+        public DbSet<LoanType> LoanTypes { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<MembershipCategory> MembershipCategories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
