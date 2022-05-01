@@ -51,7 +51,7 @@ namespace DVDRental.Controllers
         public async Task<IActionResult> Login(UserLoginModel loginModel)
         {
             var user = await _userManager.FindByNameAsync(loginModel.Username);
-               
+
             if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
@@ -95,17 +95,30 @@ namespace DVDRental.Controllers
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
-
-            IdentityUser user = new()
+            if (ModelState.IsValid)
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
+                ApplicationUser user = new()
+                {
+                    ShopName = model.ShopName,
+                    Email = model.Email,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = model.Username
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("UserView", "Home");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View(model);
+           /* if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("UserView", "Home");*/
         }
 
         // GET: Authentication/RegisterAdmin
@@ -145,7 +158,7 @@ namespace DVDRental.Controllers
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.User);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("AdminView", "Home");
 
         }
 
@@ -160,7 +173,7 @@ namespace DVDRental.Controllers
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
+                issuer: _configuration["JWT:ValidIs  suer"],
                 audience: _configuration["JWT:ValidAudience"],
                 expires: DateTime.Now.AddHours(3),
                 claims: authClaims,
@@ -169,5 +182,48 @@ namespace DVDRental.Controllers
 
             return token;
         }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+       /* [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserLoginModel loginModel)
+        {
+            if(!ModelState.IsValid) return View(loginModel);
+
+            var user = await _userManager.FindByNameAsync(loginModel.Username);
+
+            if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var token = GetToken(authClaims);
+
+                UserDetailsViewModel userDetails = new UserDetailsViewModel()
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    Expiration = token.ValidTo
+                };
+                ViewBag.User = userDetails;
+                return RedirectToAction("UserDetails", ViewBag.User);
+            }
+            return RedirectToAction("Index", "Home");
+        }*/
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DVDRental.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DVDRental.Models
 {
@@ -6,7 +7,11 @@ namespace DVDRental.Models
     {
         [Key]
         public int MembershipCategoryNumber { get; set; }   
-        public string? MembershipCategoryDescription { get; set; }
+        public MembershipCategoryDescription MembershipCategoryDescription { get; set; }
         public int MembershipCategoryTotalLoans { get; set; }
+
+        //Relationships
+        public List<Member>? Members{ get; set; }
+
     }
 }

@@ -8,5 +8,8 @@ namespace DVDRental.Models
         public int ProducerNumber { get; set; }
         public string? ProducerName { get; set; } 
 
+        //Relationships
+        public List<DVDTitle>? DVDTitles { get; set; }
+
     }
 }

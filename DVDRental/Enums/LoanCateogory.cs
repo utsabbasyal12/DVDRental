@@ -2,7 +2,7 @@
 {
     public enum LoanCateogory
     {
-        OneDay,
+        OneDay = 1,
         ThreeDays,
         Week,
         TenDays,

@@ -23,7 +23,8 @@ namespace DVDRental.Controllers
         // GET: DVDTitles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DVDTitles.ToListAsync());
+            var applicationDBContext = _context.DVDTitles.Include(d => d.DVDCategory).Include(d => d.Producers).Include(d => d.Studios);
+            return View(await applicationDBContext.ToListAsync());
         }
 
         // GET: DVDTitles/Details/5
@@ -35,6 +36,9 @@ namespace DVDRental.Controllers
             }
 
             var dVDTitle = await _context.DVDTitles
+                .Include(d => d.DVDCategory)
+                .Include(d => d.Producers)
+                .Include(d => d.Studios)
                 .FirstOrDefaultAsync(m => m.DVDNumber == id);
             if (dVDTitle == null)
             {
@@ -47,6 +51,9 @@ namespace DVDRental.Controllers
         // GET: DVDTitles/Create
         public IActionResult Create()
         {
+            ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryNumber");
+            ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerNumber");
+            ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioId");
             return View();
         }
 
@@ -55,7 +62,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DVDNumber,Title,DateRelease,StandardCharge,PenaltyCharge")] DVDTitle dVDTitle)
+        public async Task<IActionResult> Create([Bind("DVDNumber,Title,DateRelease,StandardCharge,PenaltyCharge,StudioId,ProducerNumber,CategoryNumber")] DVDTitle dVDTitle)
         {
             if (ModelState.IsValid)
             {
@@ -63,6 +70,9 @@ namespace DVDRental.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryNumber", dVDTitle.CategoryNumber);
+            ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerNumber", dVDTitle.ProducerNumber);
+            ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioId", dVDTitle.StudioId);
             return View(dVDTitle);
         }
 
@@ -79,6 +89,9 @@ namespace DVDRental.Controllers
             {
                 return NotFound();
             }
+            ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryNumber", dVDTitle.CategoryNumber);
+            ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerNumber", dVDTitle.ProducerNumber);
+            ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioId", dVDTitle.StudioId);
             return View(dVDTitle);
         }
 
@@ -87,7 +100,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DVDNumber,Title,DateRelease,StandardCharge,PenaltyCharge")] DVDTitle dVDTitle)
+        public async Task<IActionResult> Edit(int id, [Bind("DVDNumber,Title,DateRelease,StandardCharge,PenaltyCharge,StudioId,ProducerNumber,CategoryNumber")] DVDTitle dVDTitle)
         {
             if (id != dVDTitle.DVDNumber)
             {
@@ -114,6 +127,9 @@ namespace DVDRental.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryNumber", dVDTitle.CategoryNumber);
+            ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerNumber", dVDTitle.ProducerNumber);
+            ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioId", dVDTitle.StudioId);
             return View(dVDTitle);
         }
 
@@ -126,6 +142,9 @@ namespace DVDRental.Controllers
             }
 
             var dVDTitle = await _context.DVDTitles
+                .Include(d => d.DVDCategory)
+                .Include(d => d.Producers)
+                .Include(d => d.Studios)
                 .FirstOrDefaultAsync(m => m.DVDNumber == id);
             if (dVDTitle == null)
             {

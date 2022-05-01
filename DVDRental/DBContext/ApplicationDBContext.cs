@@ -28,6 +28,11 @@ namespace DVDRental.DBContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<CastMember>().HasKey(am => new
+            {
+                am.ActorId,
+                am.DVDNumber
+            });
             builder.Entity<CastMember>()
                 .HasOne(a => a.Actor)
                 .WithMany(ab => ab.CastMembers)
@@ -37,6 +42,8 @@ namespace DVDRental.DBContext
                 .HasOne(a => a.DVDTitle)
                 .WithMany(ab => ab.CastMembers)
                 .HasForeignKey(a => a.DVDNumber);
+
+            
 
         }
     }
