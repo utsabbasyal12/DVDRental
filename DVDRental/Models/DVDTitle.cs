@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DVDRental.Models
 {
+    [NotMapped]
     public class DVDTitle
     {
         [Key]
@@ -10,9 +12,26 @@ namespace DVDRental.Models
         public DateTime DateRelease { get; set; }    
         public decimal StandardCharge { get; set; }
         public decimal PenaltyCharge { get; set; }
-        public DVDCategory? DVDCategory{ get; set; }
-        public Studio? Studio { get; set; }
-        public Producer? Producer { get; set; }
+
+        //Relationships
         public List<CastMember>? CastMembers { get; set; } 
+        public List<DVDCopy>? DVDCopys { get; set; }
+
+        //Studio
+        public int StudioId { get; set; }
+        [ForeignKey("StudioId")]
+        public Studio? Studios { get; set; }
+
+        //Producer
+        public int ProducerNumber { get; set; }
+        [ForeignKey("ProducerNumber")]
+        public Producer? Producers { get; set; }
+        
+        //DVDCategory
+        public int CategoryNumber { get; set; }
+        [ForeignKey("CategoryNumber")]
+        public DVDCategory? DVDCategory{ get; set; }
+
+        
     }
 }

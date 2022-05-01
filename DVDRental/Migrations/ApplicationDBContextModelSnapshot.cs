@@ -78,7 +78,12 @@ namespace DVDRental.Migrations
                     b.Property<string>("CategoryDescription")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TempId")
+                        .HasColumnType("int");
+
                     b.HasKey("CategoryNumber");
+
+                    b.HasAlternateKey("TempId");
 
                     b.ToTable("DVDCategory");
                 });
@@ -112,7 +117,7 @@ namespace DVDRental.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DVDNumber"), 1L, 1);
 
-                    b.Property<int?>("DVDCategoryCategoryNumber")
+                    b.Property<int>("CategoryNumber")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateRelease")
@@ -121,13 +126,13 @@ namespace DVDRental.Migrations
                     b.Property<decimal>("PenaltyCharge")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ProducerNumber")
+                    b.Property<int>("ProducerNumber")
                         .HasColumnType("int");
 
                     b.Property<decimal>("StandardCharge")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("StudioId")
+                    b.Property<int>("StudioId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -135,7 +140,7 @@ namespace DVDRental.Migrations
 
                     b.HasKey("DVDNumber");
 
-                    b.HasIndex("DVDCategoryCategoryNumber");
+                    b.HasIndex("CategoryNumber");
 
                     b.HasIndex("ProducerNumber");
 
@@ -152,7 +157,7 @@ namespace DVDRental.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LoanNumber"), 1L, 1);
 
-                    b.Property<int?>("DVDCopyCopyNumber")
+                    b.Property<int>("CopyNumber")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateDue")
@@ -164,11 +169,70 @@ namespace DVDRental.Migrations
                     b.Property<DateTime>("DateRetured")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("LoanTypeNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MemberNumber")
+                        .HasColumnType("int");
+
                     b.HasKey("LoanNumber");
 
-                    b.HasIndex("DVDCopyCopyNumber");
+                    b.HasIndex("CopyNumber");
+
+                    b.HasIndex("LoanTypeNumber");
+
+                    b.HasIndex("MemberNumber");
 
                     b.ToTable("Loans");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.LoanType", b =>
+                {
+                    b.Property<int>("LoanTypeNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LoanTypeNumber"), 1L, 1);
+
+                    b.Property<int>("LoanCategory")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LoanDuration")
+                        .HasColumnType("int");
+
+                    b.HasKey("LoanTypeNumber");
+
+                    b.ToTable("LoanTypes");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Member", b =>
+                {
+                    b.Property<int>("MemberNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberNumber"), 1L, 1);
+
+                    b.Property<string>("MemberAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("MemberDOB")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MemberFirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MemberLastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MembershipCategoryNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("MemberNumber");
+
+                    b.HasIndex("MembershipCategoryNumber");
+
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("DVDRental.Models.MembershipCategory", b =>
@@ -179,8 +243,8 @@ namespace DVDRental.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MembershipCategoryNumber"), 1L, 1);
 
-                    b.Property<string>("MembershipCategoryDescription")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("MembershipCategoryDescription")
+                        .HasColumnType("int");
 
                     b.Property<int>("MembershipCategoryTotalLoans")
                         .HasColumnType("int");
@@ -442,7 +506,7 @@ namespace DVDRental.Migrations
             modelBuilder.Entity("DVDRental.Models.DVDCopy", b =>
                 {
                     b.HasOne("DVDRental.Models.DVDTitle", "DVDTitle")
-                        .WithMany()
+                        .WithMany("DVDCopys")
                         .HasForeignKey("DVDTitleDVDNumber");
 
                     b.Navigation("DVDTitle");
@@ -451,31 +515,66 @@ namespace DVDRental.Migrations
             modelBuilder.Entity("DVDRental.Models.DVDTitle", b =>
                 {
                     b.HasOne("DVDRental.Models.DVDCategory", "DVDCategory")
-                        .WithMany()
-                        .HasForeignKey("DVDCategoryCategoryNumber");
+                        .WithMany("DVDTitles")
+                        .HasForeignKey("CategoryNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DVDRental.Models.Producer", "Producer")
-                        .WithMany()
-                        .HasForeignKey("ProducerNumber");
+                    b.HasOne("DVDRental.Models.Producer", "Producers")
+                        .WithMany("DVDTitles")
+                        .HasForeignKey("ProducerNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DVDRental.Models.Studio", "Studio")
-                        .WithMany()
-                        .HasForeignKey("StudioId");
+                    b.HasOne("DVDRental.Models.Studio", "Studios")
+                        .WithMany("DVDTitles")
+                        .HasForeignKey("StudioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("DVDCategory");
 
-                    b.Navigation("Producer");
+                    b.Navigation("Producers");
 
-                    b.Navigation("Studio");
+                    b.Navigation("Studios");
                 });
 
             modelBuilder.Entity("DVDRental.Models.Loan", b =>
                 {
                     b.HasOne("DVDRental.Models.DVDCopy", "DVDCopy")
-                        .WithMany()
-                        .HasForeignKey("DVDCopyCopyNumber");
+                        .WithMany("Loan")
+                        .HasForeignKey("CopyNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DVDRental.Models.LoanType", "LoanType")
+                        .WithMany("Loan")
+                        .HasForeignKey("LoanTypeNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DVDRental.Models.Member", "Member")
+                        .WithMany("Loan")
+                        .HasForeignKey("MemberNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("DVDCopy");
+
+                    b.Navigation("LoanType");
+
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Member", b =>
+                {
+                    b.HasOne("DVDRental.Models.MembershipCategory", "MembershipCategory")
+                        .WithMany("Members")
+                        .HasForeignKey("MembershipCategoryNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MembershipCategory");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -534,9 +633,46 @@ namespace DVDRental.Migrations
                     b.Navigation("CastMembers");
                 });
 
+            modelBuilder.Entity("DVDRental.Models.DVDCategory", b =>
+                {
+                    b.Navigation("DVDTitles");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.DVDCopy", b =>
+                {
+                    b.Navigation("Loan");
+                });
+
             modelBuilder.Entity("DVDRental.Models.DVDTitle", b =>
                 {
                     b.Navigation("CastMembers");
+
+                    b.Navigation("DVDCopys");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.LoanType", b =>
+                {
+                    b.Navigation("Loan");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Member", b =>
+                {
+                    b.Navigation("Loan");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.MembershipCategory", b =>
+                {
+                    b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Producer", b =>
+                {
+                    b.Navigation("DVDTitles");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Studio", b =>
+                {
+                    b.Navigation("DVDTitles");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,7 +7,7 @@
         public Actor? Actor { get; set; }
         
         public int DVDNumber { get; set; }
-        public DVDTitle DVDTitle { get; set; }
+        public DVDTitle? DVDTitle { get; set; }
 
        /* public virtual ICollection<DVDTitle>? DVDTitle { get; set; }
         public virtual ICollection<Actor>? Actor { get; set; }*/

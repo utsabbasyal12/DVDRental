@@ -24,6 +24,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.PenaltyCharge)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Studios)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Producers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DVDCategory)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -41,6 +50,15 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PenaltyCharge)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Studios.StudioId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Producers.ProducerNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DVDCategory.CategoryNumber)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.DVDNumber">Edit</a> |

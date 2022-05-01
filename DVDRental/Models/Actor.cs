@@ -8,6 +8,8 @@ namespace DVDRental.Models
         public int ActorId { get; set; }
         public string? ActorSurname { get; set; }
         public string? ActorFirstName { get; set; }
+
+        //Relationships
         public List<CastMember>? CastMembers { get; set; }
 
 

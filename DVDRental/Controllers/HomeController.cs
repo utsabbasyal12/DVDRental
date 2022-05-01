@@ -17,7 +17,14 @@ namespace DVDRental.Controllers
         {
             return View();
         }
-
+        public IActionResult AdminView()
+        {
+            return View();
+        }
+        public IActionResult UserView()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

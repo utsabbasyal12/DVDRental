@@ -9,5 +9,9 @@ namespace DVDRental.Models
         public string? CategoryDescription { get; set; }
         public bool? AgeRestricted { get; set; }
 
+        //Relationships
+        public List<DVDTitle>? DVDTitles { get; set; }
+
+
     }
 }
