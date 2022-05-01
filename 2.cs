@@ -31,11 +31,28 @@ dvdTitlesOnShelf = dvdCopiesOnShelf.Join(dvdTitle,
 			dvdCopy => dvdCopy.CoypNo
 			dvdTitle => title.CopyNo,
 			(dvdCopy, dvdTitle) => dvdTitle
-			).GroupBy(dvdTitle => dvdTitle)
+			)
+
+requestActorNumber = request.actorNumber
+ActorList = _context.Actor
+
+dvdTitlesWithActor = dvdTitlesOnShelf.Join(CastMember,
+			dvdTitle => dvdTitle.dvdNumber,
+			castMember => castMember.dvdNumber,
+			(dvdTitle, castMember) => new
+			  {
+				dvdNumber = dvdTitle.dvdNumber,
+				producerNumber = dvdTitle.producerNumber,
+				categoryNumber = dvdTitle.categoryNumber,
+				studioNumber = dvdTitle.studioNumber,
+				dateReleased = dvdTitle.dateReleased,
+				standardCharge = dvdTitle.standardCharge,
+				penaltyCharge = dvdTitle.penaltyCharge,
+				actorNumber = castMember.actorNumber
+				actorName = castMember.actorName
+			  }
+			).GroupBy(x => x.dvdNumber)
 
 // This should return a dictionary which can be accessed via forEach
 // dvdTitlesOnShelf.key gives the title
 // dvdTitlesOnShelf.Count() gives the number of title copies on shelf 
-
-
-
