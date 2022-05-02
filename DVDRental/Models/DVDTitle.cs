@@ -8,6 +8,9 @@ namespace DVDRental.Models
     {
         [Key]
         public int DVDNumber { get; set; }
+
+        [Display(Name = "DVD Title")]
+        [Required(ErrorMessage = "DVD Title is required")]
         public string? Title { get; set; }
         public DateTime DateRelease { get; set; }    
         public decimal StandardCharge { get; set; }

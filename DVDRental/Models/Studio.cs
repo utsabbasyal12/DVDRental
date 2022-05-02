@@ -7,6 +7,9 @@ namespace DVDRental.Models
     {
         [Key]
         public int StudioId { get; set; }
+
+        [Display(Name = "Studio Name")]
+        [Required(ErrorMessage = "Studio name is required")]
         public string? StudioName { get; set; }
 
         //Relationships
