@@ -7,7 +7,13 @@ namespace DVDRental.Models
     {
         [Key]
         public int MemberNumber { get; set; }
+
+        [Display(Name = "Last Name")]
+        [Required(ErrorMessage = "Member lastname is required")]
         public string? MemberLastName { get; set; }
+
+        [Display(Name = "First Name")]
+        [Required(ErrorMessage = "Member firstname is required")]
         public string? MemberFirstName { get; set; }
         public string? MemberAddress { get; set; }
         public DateTime MemberDOB { get; set; }
