@@ -10,6 +10,12 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 builder.Services.AddDefaultIdentity<DVDRentalUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AppDBContext>();;
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireManagerRole",
+         policy => policy.RequireRole("Manager"));
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

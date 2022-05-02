@@ -49,21 +49,21 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDTitles/Create
-        public async IActionResult Create()
+        public IActionResult Create()
         {
-            var dvdDropdownData = await _context.GetNewDVDDropdownsValues();
+            //var dvdDropdownData = await _context.GetNewDVDDropdownsValues();
 
-            ViewBag.Studios = new SelectList(dvdDropdownData.Studios, "StudioId", "StudioName");
-            ViewBag.Producers= new SelectList(dvdDropdownData.Producers, "ProducerNumber", "ProducerName");
-            ViewBag.Actors = new SelectList(dvdDropdownData.Actors, "ActorId", "FirstName");
+            //ViewBag.Studios = new SelectList(dvdDropdownData.Studios, "StudioId", "StudioName");
+            //ViewBag.Producers= new SelectList(dvdDropdownData.Producers, "ProducerNumber", "ProducerName");
+            //ViewBag.Actors = new SelectList(dvdDropdownData.Actors, "ActorId", "FirstName");
 
-            return View();
-/*
+            //return View();
+
             ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryNumber");
             ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName");
             ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName");
 
-            return View();*/
+            return View();
         }
 
         // POST: DVDTitles/Create
