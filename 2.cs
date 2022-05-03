@@ -1,18 +1,18 @@
 // 2
-shopList = _context.Shop.ToList();
-dvdCopyList = _context.DVDCopy;
-userDetails = "HIVE MAGICK FUCKERY";
-userShopID = userDetails.ShopID;
-userShop = shopList.Where(shop => shop.id == userShopID);
-Loan = _context.Loan;
+var shopList = _context.Shop.ToList();
+var dvdCopyList = _context.DVDCopy;
+var userDetails = "HIVE MAGICK FUCKERY";
+var userShopID = userDetails.ShopID;
+var userShop = shopList.Where(shop => shop.id == userShopID);
+var Loan = _context.Loan;
 
-dvdCopiesFromShop = dvdCopyList.Join(userShop,
+var dvdCopiesFromShop = dvdCopyList.Join(userShop,
 			dvdCopy => dvdCopy.ShopID,
 			shop => shop.ShopID,
 			(dvdCopy, shop) => dvdCopy
 			);
 
-dvdCopiesOnLoan = dvdCopiesFromShop.Join(Loan,
+var dvdCopiesOnLoan = dvdCopiesFromShop.Join(Loan,
 			dvdCopy => dvdCopy.copyNumber,
 			loan => loan.copyNumber,  
 			(dvdCopy, loan => new

@@ -1,28 +1,28 @@
 // 1
-shopList = _context.Shop.ToList();
-dvdCopyList = _context.DVDCopy;
-userDetails = "HIVE MAGICK FUCKERY";
-userShopID = userDetails.ShopID;
-userShop = shopList.Where(shop => shop.id == userShopID);
+var shopList = _context.Shop.ToList();
+var dvdCopyList = _context.DVDCopy;
+var userDetails = "HIVE MAGICK FUCKERY";
+var userShopID = userDetails.ShopID;
+var userShop = shopList.Where(shop => shop.id == userShopID);
 
-dvdCopiesFromShop = dvdCopyList.Join(userShop,
+var dvdCopiesFromShop = dvdCopyList.Join(userShop,
 			dvdCopy => dvdCopy.ShopID,
 			shop => shop.ShopID,
 			(dvdCopy, shop) => dvdCopy
 			);
 
-dvdTitle = _context.DVDTitle;
+var dvdTitle = _context.DVDTitle;
 
-dvdTitles = dvdCopiesFromShop.Join(dvdTitle,
+var dvdTitles = dvdCopiesFromShop.Join(dvdTitle,
 			dvdCopy => dvdCopy.CoypNo,
 			dvdTitle => title.CopyNo,
 			(dvdCopy, dvdTitle) => dvdTitle
 			).Distinct();
 
-requestActorNumber = request.actorNumber;
-ActorList = _context.Actor;
+var requestActorNumber = request.actorNumber;
+var ActorList = _context.Actor;
 
-dvdTitlesWithActor = dvdTitles.Join(CastMember,
+var dvdTitlesWithActor = dvdTitles.Join(CastMember,
 			dvdTitle => dvdTitle.dvdNumber,
 			castMember => castMember.dvdNumber,
 			(dvdTitle, castMember) => new
@@ -39,5 +39,5 @@ dvdTitlesWithActor = dvdTitles.Join(CastMember,
 			  }
 			);
 
-dvdTitlesWithSelectedActor = dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber);
+var dvdTitlesWithSelectedActor = dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber);
 
