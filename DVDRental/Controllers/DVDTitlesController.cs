@@ -24,15 +24,15 @@ namespace DVDRental.Controllers
         // GET: DVDTitles
         public async Task<IActionResult> Index(string searchString)
         {
-            var dvdCopyList = _context.DVDCopies;
+            var appDBContext = _context.DVDTitles.Include(d => d.DVDCategory).Include(d => d.Producers).Include(d => d.Studios);
+            var dvdCopyList = _context.DVDCopies.AsQueryable();
             //var userDetails = "HIVE MAGICK FUCKERY";
             //var userShopID = userDetails.ShopID;
-            var dvdTitle = _context.DVDTitles;
-            var castMember = _context.CastMembers;
-            var actor = _context.Actors;
+            var dvdTitle = _context.DVDTitles.AsQueryable();
+            var castMember = _context.CastMembers.AsQueryable();
+            var actor = _context.Actors.AsQueryable();
 
-            IQueryable<DVDTitle> dvdTitlesWithSelectedActor = from m in _context.DVDTitles
-                                                              select m;
+            IQueryable<DVDTitle> dvdTitlesWithSelectedActor = _context.DVDTitles.Include(d => d.DVDCategory).Include(d => d.Producers).Include(d => d.Studios);
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -46,7 +46,7 @@ namespace DVDRental.Controllers
                             ).Distinct();
 
                 var requestActorNumber = Int32.Parse(searchString);
-                var ActorList = _context.Actors;
+                var ActorList = _context.Actors.AsQueryable();
 
                 var dvdTitlesWithActor = dvdTitles.Join(castMember,
                             dvdTitle => dvdTitle.DVDNumber,
@@ -68,13 +68,13 @@ namespace DVDRental.Controllers
                 (titleCast, actor) => titleCast
                 );
                 //linq1 end
-                dvdTitlesWithSelectedActor = (IQueryable<DVDTitle>)dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber).Select(dvdTitle => new
+                dvdTitlesWithSelectedActor = dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber).Select(dvdTitle => new DVDTitle()
                 {
                     DVDNumber = dvdTitle.dvdNumber,
                     ProducerNumber = dvdTitle.producerNumber,
                     CategoryNumber = dvdTitle.categoryNumber,
-                    StudioNumber = dvdTitle.studioNumber,
-                    DateReleased = dvdTitle.dateReleased,
+                    StudioId = dvdTitle.studioNumber,
+                    DateRelease = dvdTitle.dateReleased,
                     StandardCharge = dvdTitle.standardCharge,
                     PenaltyCharge = dvdTitle.penaltyCharge
                 });
@@ -113,7 +113,7 @@ namespace DVDRental.Controllers
             //ViewBag.Actors = new SelectList(dvdDropdownData.Actors, "ActorId", "FirstName");
 
             //return View();
-
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
             ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription");
             ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName");
             ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName");
@@ -134,6 +134,7 @@ namespace DVDRental.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
             ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription", dVDTitle.CategoryNumber);
             ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName", dVDTitle.ProducerNumber);
             ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName", dVDTitle.StudioId);
