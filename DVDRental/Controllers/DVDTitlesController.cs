@@ -32,7 +32,7 @@ namespace DVDRental.Controllers
             var actor = _context.Actors;
 
             IQueryable<DVDTitle> dvdTitlesWithSelectedActor = from m in _context.DVDTitles
-                                         select m;
+                                                              select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -68,10 +68,18 @@ namespace DVDRental.Controllers
                 (titleCast, actor) => titleCast
                 );
                 //linq1 end
-               dvdTitlesWithSelectedActor = dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber);
+                dvdTitlesWithSelectedActor = (IQueryable<DVDTitle>)dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber).Select(dvdTitle => new
+                {
+                    DVDNumber = dvdTitle.dvdNumber,
+                    ProducerNumber = dvdTitle.producerNumber,
+                    CategoryNumber = dvdTitle.categoryNumber,
+                    StudioNumber = dvdTitle.studioNumber,
+                    DateReleased = dvdTitle.dateReleased,
+                    StandardCharge = dvdTitle.standardCharge,
+                    PenaltyCharge = dvdTitle.penaltyCharge
+                });
             }
-
-            return View(await dvdTitlesWithSelectedActor.ToListAsync());
+                return View(await dvdTitlesWithSelectedActor.ToListAsync());
         }
 
         // GET: DVDTitles/Details/5
