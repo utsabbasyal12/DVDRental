@@ -8,7 +8,7 @@ namespace DVDRental.Models
         [Key]
         public int CategoryNumber { get; set; }
         public CategoryDescription CategoryDescription { get; set; }
-        public bool? AgeRestricted { get; set; }
+        public AgeRestricted AgeRestricted { get; set; }
 
         //Relationships
         public List<DVDTitle>? DVDTitles { get; set; }

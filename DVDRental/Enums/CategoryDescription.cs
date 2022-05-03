@@ -7,6 +7,7 @@
         Drama,
         Documentary,
         Cartoon,
-        Horror
+        Horror,
+        Gore
     }
 }

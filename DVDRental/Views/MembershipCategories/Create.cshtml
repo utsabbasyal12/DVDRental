@@ -1,4 +1,5 @@
-﻿@model DVDRental.Models.MembershipCategory
+﻿@using DVDRental.Enums
+@model DVDRental.Models.MembershipCategory
 
 @{
     ViewData["Title"] = "Create";
@@ -14,7 +15,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="MembershipCategoryDescription" class="control-label"></label>
-                <select asp-for="MembershipCategoryDescription" class="form-control"></select>
+                <select asp-for="MembershipCategoryDescription" class="form-control" asp-items="Html.GetEnumSelectList<MembershipCategoryDescription>()"></select>
                 <span asp-validation-for="MembershipCategoryDescription" class="text-danger"></span>
             </div>
             <div class="form-group">
