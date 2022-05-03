@@ -1,6 +1,6 @@
 ﻿namespace DVDRental.Enums
 {
-    public enum LoanCateogory
+    public enum LoanCategory
     {
         OneDay = 1,
         ThreeDays,
