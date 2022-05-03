@@ -68,7 +68,7 @@ namespace DVDRental.Controllers
                 (titleCast, actor) => titleCast
                 );
                 //linq1 end
-               dvdTitlesWithSelectedActor = dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber);
+               dvdTitlesWithSelectedActor = (IQueryable<DVDTitle>)dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber);
             }
 
             return View(await dvdTitlesWithSelectedActor.ToListAsync());
