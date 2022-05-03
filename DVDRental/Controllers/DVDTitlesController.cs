@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
 
+
 namespace DVDRental.Controllers
 {
     public class DVDTitlesController : Controller
@@ -21,10 +22,56 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDTitles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var appDBContext = _context.DVDTitles.Include(d => d.DVDCategory).Include(d => d.Producers).Include(d => d.Studios);
-            return View(await appDBContext.ToListAsync());
+            var dvdCopyList = _context.DVDCopies;
+            //var userDetails = "HIVE MAGICK FUCKERY";
+            //var userShopID = userDetails.ShopID;
+            var dvdTitle = _context.DVDTitles;
+            var castMember = _context.CastMembers;
+            var actor = _context.Actors;
+
+            IQueryable<DVDTitle> dvdTitlesWithSelectedActor = from m in _context.DVDTitles
+                                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                //linq1 start
+                //var shopList = _context.Shop.ToList();
+
+                var dvdTitles = dvdCopyList.Join(dvdTitle,
+                            dvdCopy => dvdCopy.DVDNumber,
+                            dvdTitle => dvdTitle.DVDNumber,
+                            (dvdCopy, dvdTitle) => dvdTitle
+                            ).Distinct();
+
+                var requestActorNumber = Int32.Parse(searchString);
+                var ActorList = _context.Actors;
+
+                var dvdTitlesWithActor = dvdTitles.Join(castMember,
+                            dvdTitle => dvdTitle.DVDNumber,
+                            castMember => castMember.DVDNumber,
+                            (dvdTitle, castMember) => new
+                            {
+                                dvdNumber = dvdTitle.DVDNumber,
+                                producerNumber = dvdTitle.ProducerNumber,
+                                categoryNumber = dvdTitle.CategoryNumber,
+                                studioNumber = dvdTitle.StudioId,
+                                dateReleased = dvdTitle.DateRelease,
+                                standardCharge = dvdTitle.StandardCharge,
+                                penaltyCharge = dvdTitle.PenaltyCharge,
+                                actorNumber = castMember.ActorId
+                            }
+                            ).Join(ActorList,
+                titleCast => titleCast.actorNumber,
+                actor => actor.ActorId,
+                (titleCast, actor) => titleCast
+                );
+                //linq1 end
+               dvdTitlesWithSelectedActor = dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber);
+            }
+
+            return View(await dvdTitlesWithSelectedActor.ToListAsync());
         }
 
         // GET: DVDTitles/Details/5
