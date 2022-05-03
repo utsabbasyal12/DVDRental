@@ -58,7 +58,7 @@ namespace DVDRental.Controllers
             //ViewBag.Actors = new SelectList(dvdDropdownData.Actors, "ActorId", "FirstName");
 
             //return View();
-
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
             ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription");
             ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName");
             ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName");
@@ -79,6 +79,7 @@ namespace DVDRental.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
             ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription", dVDTitle.CategoryNumber);
             ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName", dVDTitle.ProducerNumber);
             ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName", dVDTitle.StudioId);
