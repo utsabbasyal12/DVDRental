@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using DVDRental.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<DVDRentalUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,9 +26,24 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                         @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    DVD Management
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="Actors" asp-action="Index">Actors</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="Studios" asp-action="Index">Studios</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="Producers" asp-action="Index">Producers</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="DVDCategories" asp-action="Index">DVD Category</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="Index">DVD Titles</a>
+
+                            </li>
+                        }
                     </ul>
                 </div>
                 <partial name="_LoginPartial"/>
