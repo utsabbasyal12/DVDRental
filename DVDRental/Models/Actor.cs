@@ -1,9 +1,8 @@
-﻿using DVDRental.Data.Base;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DVDRental.Models
 {
-    public class Actor:IEntityBase
+    public class Actor
     {
         [Key]
         public int ActorId { get; set; }
