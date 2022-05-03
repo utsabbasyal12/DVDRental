@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DVDRental.Models
 {
-    [NotMapped]
+    //[NotMapped]
     public class DVDTitle
     {
         [Key]
