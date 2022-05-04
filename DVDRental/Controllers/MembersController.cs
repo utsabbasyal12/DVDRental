@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
+using DVDRental.Models.ViewModels;
 
 namespace DVDRental.Controllers
 {
@@ -26,9 +27,86 @@ namespace DVDRental.Controllers
             var appDBContext = _context.Members.Include(m => m.MembershipCategory);
             return View(await appDBContext.ToListAsync());
         }
+        public async Task<IActionResult> SearchMemberLoan(string searchString)
+        {
+            //var user = UserManager.FindById(User.Identity.GetUserId());
+            var dvdCopyList = _context.DVDCopies.ToList();
+            //var userDetails = "HIVE MAGICK FUCKERY";
+            //var userShopID = userDetails.ShopID;
+            var dvdTitle = _context.DVDTitles.ToList();
+            var castMember = _context.CastMembers.ToList();
+            var actor = _context.Actors.ToList();
+            var members = _context.Members.ToList();
+            var loan =  _context.Loans.ToList();
 
-        // GET: Members/Details/5
-        public async Task<IActionResult> Details(int? id)
+            var memberLoans = from m in members
+                              join l in loan
+                              on m.MemberNumber equals l.MemberNumber
+                              join dc in dvdCopyList
+                              on l.CopyNumber equals dc.CopyNumber
+                              join dt in dvdTitle
+                              on dc.DVDNumber equals dt.DVDNumber
+                              join produc in _context.Producers.ToList()
+                              on dt.ProducerNumber equals produc.ProducerNumber
+                              join stud in _context.Studios.ToList()
+                              on dt.StudioId equals stud.StudioId
+                              join dvdCat in _context.DVDCategory.ToList()
+                              on dt.CategoryNumber equals dvdCat.CategoryNumber
+
+                              select new SearchMemberLoanVM
+                              {
+                                  DVDTitle = dt.Title,
+                                  CopyNumber = dc.CopyNumber,
+                                  MemberFirstName = m.MemberFirstName,
+                                  MemberLastName = m.MemberLastName,
+                              };
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var memberLastName = searchString;
+                var currentDate = DateTime.Now;
+
+                memberLoans = from m in members.Where(m=> m.MemberLastName == memberLastName)
+                                  join l in loan.Where(l => l.DateRetured != null && l.DateRetured.Subtract(currentDate).TotalDays <= 31)
+                                  on m.MemberNumber equals l.MemberNumber
+                                  join dc in dvdCopyList
+                                  on l.CopyNumber equals dc.CopyNumber
+                                  join dt in dvdTitle
+                                  on dc.DVDNumber equals dt.DVDNumber
+                                  join produc in _context.Producers.ToList()
+                                  on dt.ProducerNumber equals produc.ProducerNumber
+                                  join stud in _context.Studios.ToList()
+                                  on dt.StudioId equals stud.StudioId
+                                  join dvdCat in _context.DVDCategory.ToList()
+                                  on dt.CategoryNumber equals dvdCat.CategoryNumber
+
+                                  select new SearchMemberLoanVM
+                                  {
+                                      DVDTitle = dt.Title,
+                                      CopyNumber = dc.CopyNumber,
+                                      MemberFirstName = m.MemberFirstName,
+                                      MemberLastName = m.MemberLastName,
+                                  };
+
+
+                //members.Join(loan,
+                //        member => member.MemberNumber,
+                //        loan => loan.MemberNumber,
+                //        (member, loan) => loan
+                //        ).Where(x => x.dateReturned != null)
+                //        .Where(DateTime.Now() - x.dateReturned <= 31)
+                //        .Where(x => x.memberNumber == selectedMember);
+
+            }
+
+
+                //    //linq1 end
+
+                return View(memberLoans);
+        }
+
+            // GET: Members/Details/5
+            public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
