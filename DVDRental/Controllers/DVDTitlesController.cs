@@ -222,8 +222,13 @@ namespace DVDRental.Controllers
             ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription", dVDTitle.CategoryNumber);
             ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName", dVDTitle.ProducerNumber);
             ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName", dVDTitle.StudioId);
+
+            
+
             return View(dVDTitle);
         }
+
+        
 
         // GET: DVDTitles/Edit/5
         public async Task<IActionResult> Edit(int? id)
