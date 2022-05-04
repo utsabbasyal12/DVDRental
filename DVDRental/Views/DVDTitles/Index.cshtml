@@ -4,12 +4,9 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<h1>List of DVD's</h1>
+                                    
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -33,7 +30,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DVDCategory)
             </th>
-            <th></th>
+            <th>
+                 @Html.DisplayNameFor(model => model.CastMembers)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -60,6 +59,8 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DVDCategory.CategoryNumber)
             </td>
+             <td>
+            </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.DVDNumber">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.DVDNumber">Details</a> |
@@ -69,3 +70,63 @@
 }
     </tbody>
 </table>
+*@
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 col-xs-6 border-primary mb-3">
+            <div class="card mb-3" style="max-width: auto;">
+                <div class="row g-0">
+                    <div class="col-md-12">
+                        <div class="card-header text-white bg-info">
+                            <p class="card-text">
+                                <h5 class="card-title">
+                                    @item.Title
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <a class="text-white float-right" asp-action="Edit" asp-route-id="@item.DVDNumber"><i class="bi bi-pencil-square"></i></a>
+                                    }
+                                </h5>
+                            </p>
+                        </div>
+                    </div>                
+                    <div class="col-md-12">
+                        <div class="card-body">
+                            <p class="card-text"><b>Date Release: </b>@item.DateRelease.ToString("dd MMM yy")</p>
+                            <p class="card-text"><b>Standard Charge: </b>@item.StandardCharge.ToString()</p>
+                            <p class="card-text"><b>Penalty Charge: </b>@item.PenaltyCharge.ToString()</p>
+                            <p class="card-text"><b>Studio: </b>@item.Studios.StudioName</p>
+                            <p class="card-text"><b>Producer: </b>@item.Producers.ProducerName</p>
+                            <p class="card-text"><b>Category: </b>@item.DVDCategory.CategoryDescription</p>
+                           @*<p class="card-text"><b>Actors: </b>@item.CastMembers</p>*@
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card-footer ">
+                            <p class="card-text">
+                                <a class="btn btn-outline-primary float-left" asp-action="Details" asp-route-id="@item.DVDNumber">
+                                    <i class="bi bi-eye-fill"></i> Show Details
+                                </a>
+                                 @if (User.Identity.IsAuthenticated)
+                                    {
+                                  <a class="btn btn-outline-danger float-right" asp-action="Delete" asp-route-id="@item.DVDNumber">
+                                      <i class="bi bi-trash"></i>Delete
+                                      </a>
+                                    }
+                               @* <a class="btn btn-success text-white @((DateTime.Now > item.EndDate) ? "disabled" : "")" 
+                                   asp-controller="Orders" 
+                                   asp-action="AddItemToShoppingCart" 
+                                   asp-route-id="@item.Id">
+                                <i class="bi bi-cart-plus"></i> Add to Cart (Price @item.Price.ToString("c"))</a>*@
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@await Html.PartialAsync("_CreateItem", "DVDTitles") 
