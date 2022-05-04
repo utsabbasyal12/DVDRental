@@ -19,9 +19,9 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DVDTitle.Title)
+                @Html.DisplayNameFor(model => model.DVDTitle)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.DVDTitle.DateRelease)
             </th>
             <th>
@@ -39,16 +39,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.DVDTitle.DVDCategory)
             </th>
-            <th></th>
+            <th></th>*@
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DVDTitle.Title)
+                @Html.DisplayFor(modelItem => item.DVDTitle)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.DVDTitle.DateRelease)
             </td>
             <td>
@@ -70,7 +70,7 @@
                 <a asp-action="Edit" asp-route-id="@item.DVDTitle.DVDNumber">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.DVDTitle.DVDNumber">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.DVDTitle.DVDNumber">Delete</a>
-            </td>
+            </td>*@
         </tr>
 }
     </tbody>

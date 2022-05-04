@@ -2,11 +2,11 @@
 {
     public class DVDTitleIndexVM
     {
-        public DVDTitle? DVDTitle { get; set; }  
-        public Actor? Actor { get; set; }   
-        public Producer? Producer { get; set; } 
-        public Studio? Studio { get; set; } 
-        public DVDCategory? DVDCategory { get; set; }
-        public CastMember? CastMember { get; set; }
+        public string? DVDTitle { get; set; }  
+        public string? Actor { get; set; }   
+        public string? Producer { get; set; } 
+        public string? Studio { get; set; } 
+        public string? DVDCategory { get; set; }
+        public string? CastMember { get; set; }
     }
 }
