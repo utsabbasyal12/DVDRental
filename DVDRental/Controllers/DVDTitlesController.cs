@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
-
+using DVDRental.Models.ViewModels;
 
 namespace DVDRental.Controllers
 {
@@ -31,8 +31,60 @@ namespace DVDRental.Controllers
             var castMember = _context.CastMembers;
             var actor = _context.Actors;
 
-            IQueryable<DVDTitle> dvdTitlesWithSelectedActor = from m in _context.DVDTitles
-                                                              select m;
+             //var dvdTitlesWithSelectedActor = _context.DVDTitles.Include(d => d.DVDCategory)
+             //   .Include(d => d.Producers)
+             //   .Include(d => d.Studios);
+            var dvdTitlesWithSelectedActor = dvdTitle.Join(castMember,
+                dvdTitle => dvdTitle.DVDNumber,
+                castMember => castMember.DVDNumber,
+                (dvdTitle, castMember) => new DVDTitleIndexVM()
+                {
+                    DVDTitle = dvdTitle,
+                    CastMember = castMember
+                }
+                )
+                .Join(actor,
+                left => left.CastMember.ActorId,
+                actor => actor.ActorId,
+                (left, actor) => new DVDTitleIndexVM()
+                {
+                    DVDTitle = left.DVDTitle,
+                    Actor = actor
+                }
+                )
+                .Join(_context.Producers,
+                left => left.DVDTitle.ProducerNumber,
+                producer => producer.ProducerNumber,
+                (left, producer) => new DVDTitleIndexVM()
+                {
+                    DVDTitle = left.DVDTitle,
+                    Actor = left.Actor,
+                    Producer = producer
+                }
+                )
+                .Join(_context.Studios,
+                left => left.DVDTitle.StudioId,
+                studio => studio.StudioId,
+                (left, studio) => new DVDTitleIndexVM()
+                {
+                    DVDTitle = left.DVDTitle,
+                    Actor = left.Actor,
+                    Producer = left.Producer,
+                    Studio = studio
+                }
+                )
+                .Join(_context.DVDCategory,
+                left => left.DVDTitle.CategoryNumber,
+                category => category.CategoryNumber,
+                (left, category) => new DVDTitleIndexVM()
+                {
+                    DVDTitle = left.DVDTitle,
+                    Actor = left.Actor,
+                    Producer = left.Producer,
+                    Studio = left.Studio,
+                    DVDCategory = category
+                }
+            );
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -46,38 +98,71 @@ namespace DVDRental.Controllers
                             ).Distinct();
 
                 var requestActorNumber = Int32.Parse(searchString);
-                var ActorList = _context.Actors;
-
-                var dvdTitlesWithActor = dvdTitles.Join(castMember,
+     
+                dvdTitlesWithSelectedActor = dvdTitles.Join(castMember,
                             dvdTitle => dvdTitle.DVDNumber,
                             castMember => castMember.DVDNumber,
-                            (dvdTitle, castMember) => new
+                            (dvdTitle, castMember) => new DVDTitleIndexVM()
                             {
-                                dvdNumber = dvdTitle.DVDNumber,
-                                producerNumber = dvdTitle.ProducerNumber,
-                                categoryNumber = dvdTitle.CategoryNumber,
-                                studioNumber = dvdTitle.StudioId,
-                                dateReleased = dvdTitle.DateRelease,
-                                standardCharge = dvdTitle.StandardCharge,
-                                penaltyCharge = dvdTitle.PenaltyCharge,
-                                actorNumber = castMember.ActorId
+                                DVDTitle = dvdTitle,
+                                CastMember = castMember
                             }
-                            ).Join(ActorList,
-                titleCast => titleCast.actorNumber,
-                actor => actor.ActorId,
-                (titleCast, actor) => titleCast
-                );
+                            )
+                            .Join(actor,
+                            left => left.CastMember.ActorId,
+                            actor => actor.ActorId,
+                            (left, actor) => new DVDTitleIndexVM() {
+                                DVDTitle =left.DVDTitle,
+                                Actor = actor 
+                            }
+                            )
+                            .Join(_context.Producers,
+                            left => left.DVDTitle.ProducerNumber,
+                            producer => producer.ProducerNumber,
+                            (left, producer) => new DVDTitleIndexVM() { 
+                                DVDTitle = left.DVDTitle,
+                                Actor = left.Actor, 
+                                Producer = producer 
+                            }
+                            )
+                            .Join(_context.Studios,
+                            left => left.DVDTitle.StudioId,
+                            studio => studio.StudioId,
+                            (left, studio) => new DVDTitleIndexVM() { 
+                                DVDTitle = left.DVDTitle, 
+                                Actor = left.Actor, 
+                                Producer = left.Producer, 
+                                Studio = studio
+                            }
+                            )
+                            .Join(_context.DVDCategory,
+                            left => left.DVDTitle.CategoryNumber,
+                            category => category.CategoryNumber,
+                            (left, category) => new DVDTitleIndexVM() {
+                                DVDTitle = left.DVDTitle, 
+                                Actor = left.Actor, 
+                                Producer = left.Producer, 
+                                Studio = left.Studio, 
+                                DVDCategory = category 
+                            }
+                            ).Where(x=> x.Actor.ActorId == requestActorNumber);
+
+                
+
                 //linq1 end
-                dvdTitlesWithSelectedActor = (IQueryable<DVDTitle>)dvdTitlesWithActor.Where(title => title.actorNumber == requestActorNumber).Select(dvdTitle => new
-                {
-                    DVDNumber = dvdTitle.dvdNumber,
-                    ProducerNumber = dvdTitle.producerNumber,
-                    CategoryNumber = dvdTitle.categoryNumber,
-                    StudioNumber = dvdTitle.studioNumber,
-                    DateReleased = dvdTitle.dateReleased,
-                    StandardCharge = dvdTitle.standardCharge,
-                    PenaltyCharge = dvdTitle.penaltyCharge
-                });
+                //var dvds = dvdTitles.Include(d => d.Studios).Include(d => d.Producers).Include(d => d.DVDCategory).Include(d => d.CastMembers);
+
+                //dvdTitlesWithSelectedActor = (IQueryable<DVDTitle,Actor,Producer,Studio,DVDCategory>)dvds.Where(title => title.actor.ActorId == requestActorNumber).Select(x => new {
+
+
+                //});
+                //DVDTitleIndexVM dVDTitleIndexVM = new DVDTitleIndexVM()
+                //{
+                //    DVDTitle = (DVDTitle) dvds.GetType().GetProperty("dvdTitle").GetValue(d, null),
+                //    Actor = (Actor) dvds.GetType().GetProperty("actor").GetValue(, null)
+                //};
+
+
             }
                 return View(await dvdTitlesWithSelectedActor.ToListAsync());
         }
