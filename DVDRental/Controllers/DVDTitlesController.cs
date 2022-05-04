@@ -31,15 +31,11 @@ namespace DVDRental.Controllers
             var castMember = _context.CastMembers.ToList();
             var actor = _context.Actors.ToList();
 
-            //var dvdTitlesWithSelectedActor = _context.DVDTitles.Include(d => d.DVDCategory)
-            //   .Include(d => d.Producers)
-            //   .Include(d => d.Studios);
-
             var dvdTitlesWithSelectedActor = (from dvd in dvdTitle
-                      join cast in castMember
-                      on dvd.DVDNumber equals cast.DVDNumber
-                      join act in actor
-                      on cast.ActorId equals act.ActorId
+                      //join cast in castMember
+                      //on dvd.DVDNumber equals cast.DVDNumber
+                      //join act in actor
+                      //on cast.ActorId equals act.ActorId
                       join produc in _context.Producers.ToList()
                       on dvd.ProducerNumber equals produc.ProducerNumber
                       join stud in _context.Studios.ToList()
@@ -48,11 +44,15 @@ namespace DVDRental.Controllers
                       on dvd.CategoryNumber equals dvdCat.CategoryNumber
                       select new DVDTitleIndexVM
                       {
-                          Actor = act.ActorSurname,
+                          //Actor = act.ActorSurname,
                           DVDCategory = dvdCat.CategoryDescription.ToString(),
                           DVDTitle = dvd.Title,
+                          DVDNumber = dvd.DVDNumber,
                           Producer = produc.ProducerName,
-                          Studio = stud.StudioName
+                          Studio = stud.StudioName,
+                          PenaltyCharge = dvd.PenaltyCharge,
+                          StandardCharge = dvd.StandardCharge,
+                          DateReleased = dvd.DateRelease
                       }).ToList();
 
             if (!String.IsNullOrEmpty(searchString))
@@ -69,10 +69,10 @@ namespace DVDRental.Controllers
                 var requestActorNumber = searchString;
 
                 dvdTitlesWithSelectedActor = (from dvd in dvdTitle
-                                            join cast in castMember
-                                            on dvd.DVDNumber equals cast.DVDNumber
-                                            join act in actor.Where(x => x.ActorSurname == requestActorNumber)
-                                            on cast.ActorId equals act.ActorId
+                                            //join cast in castMember
+                                            //on dvd.DVDNumber equals cast.DVDNumber
+                                            //join act in actor.Where(x => x.ActorSurname == requestActorNumber)
+                                            //on cast.ActorId equals act.ActorId
                                             join produc in _context.Producers.ToList()
                                             on dvd.ProducerNumber equals produc.ProducerNumber
                                             join stud in _context.Studios.ToList()
@@ -81,11 +81,15 @@ namespace DVDRental.Controllers
                                             on dvd.CategoryNumber equals dvdCat.CategoryNumber
                                             select new DVDTitleIndexVM
                                             {
-                                                Actor = act.ActorSurname,
+                                                //Actor = act.ActorSurname,
                                                 DVDCategory = dvdCat.CategoryDescription.ToString(),
                                                 DVDTitle = dvd.Title,
+                                                DVDNumber = dvd.DVDNumber,
                                                 Producer = produc.ProducerName,
-                                                Studio = stud.StudioName
+                                                Studio = stud.StudioName,
+                                                PenaltyCharge = dvd.PenaltyCharge,
+                                                StandardCharge = dvd.StandardCharge,
+                                                DateReleased = dvd.DateRelease
                                             }).ToList();
             }
 

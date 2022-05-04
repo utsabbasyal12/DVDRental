@@ -21,25 +21,25 @@
             <th>
                 @Html.DisplayNameFor(model => model.DVDTitle)
             </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.DVDTitle.DateRelease)
+            <th>
+                @Html.DisplayNameFor(model => model.DateReleased)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DVDTitle.StandardCharge)
+                @Html.DisplayNameFor(model => model.StandardCharge)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DVDTitle.PenaltyCharge)
+                @Html.DisplayNameFor(model => model.PenaltyCharge)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DVDTitle.Studios)
+                @Html.DisplayNameFor(model => model.Studio)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DVDTitle.Producers)
+                @Html.DisplayNameFor(model => model.Producer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DVDTitle.DVDCategory)
+                @Html.DisplayNameFor(model => model.DVDCategory)
             </th>
-            <th></th>*@
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -48,29 +48,29 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DVDTitle)
             </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.DVDTitle.DateRelease)
+            <td>
+                @Html.DisplayFor(modelItem => item.DateReleased)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DVDTitle.StandardCharge)
+                @Html.DisplayFor(modelItem => item.StandardCharge)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DVDTitle.PenaltyCharge)
+                @Html.DisplayFor(modelItem => item.PenaltyCharge)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Studio.StudioName)
+                @Html.DisplayFor(modelItem => item.Studio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Producer.ProducerName)
+                @Html.DisplayFor(modelItem => item.Producer)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DVDCategory.CategoryNumber)
+                @Html.DisplayFor(modelItem => item.DVDCategory)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.DVDTitle.DVDNumber">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DVDTitle.DVDNumber">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DVDTitle.DVDNumber">Delete</a>
-            </td>*@
+                <a asp-action="Edit" asp-route-id="@item.DVDNumber">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.DVDNumber">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.DVDNumber">Delete</a>
+            </td>
         </tr>
 }
     </tbody>
