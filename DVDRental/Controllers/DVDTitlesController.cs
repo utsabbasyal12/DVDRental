@@ -198,6 +198,53 @@ namespace DVDRental.Controllers
             return View(titlesAndCast);
                 }
 
+        public async Task<IActionResult> OldCopies()
+        {
+            var dvdCopies = _context.DVDCopies.ToList();
+            var dvdTitles = _context.DVDTitles.ToList();
+
+            var OldCopies = (from dc in dvdCopies
+                            join dt in dvdTitles.Where(dt => (DateTime.Now.Subtract(dt.DateRelease).TotalDays >= 365))
+                            on dc.DVDNumber equals dt.DVDNumber
+                            select new OldCopiesVM
+                            {
+                                CopyNumber = dc.CopyNumber,
+                                DateReleased = dt.DateRelease,
+                                Title = dt.Title
+                            });
+
+
+            return View(OldCopies);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // GET: DVDTitles/Details/5
         public async Task<IActionResult> Details(int? id)
         {

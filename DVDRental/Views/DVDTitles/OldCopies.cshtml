@@ -1,0 +1,42 @@
+﻿@model IEnumerable<DVDRental.Models.ViewModels.OldCopiesVM>
+
+@{
+    ViewData["Title"] = "Old Copies List";
+}
+
+<h1>Old Copies List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CopyNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateReleased)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CopyNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateReleased)
+            </td>
+            <td>
+                <a asp-controller="DVDCopies" asp-action="Delete" asp-route-id="@item.CopyNumber">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
