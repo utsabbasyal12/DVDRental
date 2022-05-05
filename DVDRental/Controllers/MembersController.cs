@@ -37,7 +37,7 @@ namespace DVDRental.Controllers
             var castMember = _context.CastMembers.ToList();
             var actor = _context.Actors.ToList();
             var members = _context.Members.ToList();
-            var loan =  _context.Loans.ToList();
+            var loan = _context.Loans.ToList();
 
             var memberLoans = from m in members
                               join l in loan
@@ -66,27 +66,27 @@ namespace DVDRental.Controllers
                 var memberLastName = searchString;
                 var currentDate = DateTime.Now;
 
-                memberLoans = from m in members.Where(m=> m.MemberLastName == memberLastName)
-                                  join l in loan.Where(l => l.DateRetured.Subtract(currentDate).TotalDays <= 31)
-                                  on m.MemberNumber equals l.MemberNumber
-                                  join dc in dvdCopyList
-                                  on l.CopyNumber equals dc.CopyNumber
-                                  join dt in dvdTitle
-                                  on dc.DVDNumber equals dt.DVDNumber
-                                  join produc in _context.Producers.ToList()
-                                  on dt.ProducerNumber equals produc.ProducerNumber
-                                  join stud in _context.Studios.ToList()
-                                  on dt.StudioId equals stud.StudioId
-                                  join dvdCat in _context.DVDCategory.ToList()
-                                  on dt.CategoryNumber equals dvdCat.CategoryNumber
+                memberLoans = from m in members.Where(m => m.MemberLastName == memberLastName)
+                              join l in loan.Where(l => l.DateRetured?.Subtract(currentDate).TotalDays <= 31)
+                              on m.MemberNumber equals l.MemberNumber
+                              join dc in dvdCopyList
+                              on l.CopyNumber equals dc.CopyNumber
+                              join dt in dvdTitle
+                              on dc.DVDNumber equals dt.DVDNumber
+                              join produc in _context.Producers.ToList()
+                              on dt.ProducerNumber equals produc.ProducerNumber
+                              join stud in _context.Studios.ToList()
+                              on dt.StudioId equals stud.StudioId
+                              join dvdCat in _context.DVDCategory.ToList()
+                              on dt.CategoryNumber equals dvdCat.CategoryNumber
 
-                                  select new SearchMemberLoanVM
-                                  {
-                                      DVDTitle = dt.Title,
-                                      CopyNumber = dc.CopyNumber,
-                                      MemberFirstName = m.MemberFirstName,
-                                      MemberLastName = m.MemberLastName,
-                                  };
+                              select new SearchMemberLoanVM
+                              {
+                                  DVDTitle = dt.Title,
+                                  CopyNumber = dc.CopyNumber,
+                                  MemberFirstName = m.MemberFirstName,
+                                  MemberLastName = m.MemberLastName,
+                              };
 
 
                 //members.Join(loan,
@@ -100,13 +100,13 @@ namespace DVDRental.Controllers
             }
 
 
-                //    //linq1 end
+            //    //linq1 end
 
-                return View(memberLoans);
+            return View(memberLoans);
         }
 
-            // GET: Members/Details/5
-            public async Task<IActionResult> Details(int? id)
+        // GET: Members/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
