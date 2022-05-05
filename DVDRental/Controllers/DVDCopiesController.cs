@@ -109,7 +109,24 @@ namespace DVDRental.Controllers
             return View(LoanedCopyDetails);
         }
 
+        public async Task<IActionResult> UnloanedCopies()
+        {
+            var dvdCopies = _context.DVDCopies.ToList();
+            var dvdTitles = _context.DVDTitles.ToList();
+            var loans = _context.Loans.ToList();
 
+            var loanedTitlesWithinAMonth = from dc in dvdCopies
+                                           join l in loans.Where(l => (DateTime.Now.Subtract(l.DateOut).TotalDays <= 31))
+                                           on dc.CopyNumber equals l.CopyNumber
+                                           join dt in dvdTitles
+                                           on dc.DVDNumber equals dt.DVDNumber
+                                           select dt;
+
+            var unloandedTitlesWithinAMonth = dvdTitles.Except(loanedTitlesWithinAMonth);
+
+
+            return View(unloandedTitlesWithinAMonth);
+        }
 
 
 
