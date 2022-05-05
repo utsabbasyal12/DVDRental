@@ -6,7 +6,7 @@
 
 <h1>Search Copy</h1>
 
-<form asp-controller="DVDTitles" asp-action="Index">
+<form asp-controller="DVDCopies" asp-action="Index">
     <br><br>
     <p>
         Copy Number: <input type="number" name="SearchString" />
@@ -63,7 +63,7 @@
                 @Html.DisplayFor(modelItem => item.DateReturned)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DVDTitle)
+                @Html.DisplayFor(modelItem => item.CopyNumber)
             </td>
 @*            <td>
                 <a asp-action="Edit" asp-route-id="@item.DVDNumber">Edit</a> |

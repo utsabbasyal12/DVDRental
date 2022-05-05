@@ -66,8 +66,9 @@ namespace DVDRental.Controllers
                 var memberLastName = searchString;
                 var currentDate = DateTime.Now;
 
-                memberLoans = from m in members.Where(m => m.MemberLastName == memberLastName)
-                              join l in loan.Where(l => l.DateRetured?.Subtract(currentDate).TotalDays <= 31)
+               memberLoans = from m in members.Where(m => m.MemberLastName == memberLastName)
+                              join l in loan
+                              .Where(l => l.DateOut.Subtract(currentDate).TotalDays <= 31)
                               on m.MemberNumber equals l.MemberNumber
                               join dc in dvdCopyList
                               on l.CopyNumber equals dc.CopyNumber

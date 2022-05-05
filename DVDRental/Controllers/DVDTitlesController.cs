@@ -121,11 +121,12 @@ namespace DVDRental.Controllers
                                               {
                                                   //Actor = act.ActorSurname,
                                                   DVDTitle = dvd.Title
-                                              }).ToList().GroupBy(x => x.DVDTitle).Select(g=>new DVDTitleSearchCopyVM
-                                              {
-                                                  DVDTitle = g.Key,
-                                                  TitleCount = g.Count()
-                                              });
+                                              }).ToList()
+                                              .GroupBy(x => x.DVDTitle).Select(g => new DVDTitleSearchCopyVM
+                                               {
+                                                   DVDTitle = g.Key,
+                                                   TitleCount = g.Count()
+                                               });
 
 
             if (!String.IsNullOrEmpty(searchString))
@@ -148,14 +149,15 @@ namespace DVDRental.Controllers
                                               on cast.ActorId equals act.ActorId
 
                                               select new DVDTitleSearchCopyVM
-                                                  {
-                                                      //Actor = act.ActorSurname,
-                                                      DVDTitle = dvd.Title
-                                                  }).ToList().GroupBy(x => x.DVDTitle).Select(g => new DVDTitleSearchCopyVM
-                                                  {
-                                                      DVDTitle = g.Key,
-                                                      TitleCount = g.Count()
-                                                  });
+                                              {
+                                                  //Actor = act.ActorSurname,
+                                                  DVDTitle = dvd.Title
+                                              }).ToList()
+                                                  .GroupBy(x => x.DVDTitle).Select(g => new DVDTitleSearchCopyVM
+                                                   {
+                                                       DVDTitle = g.Key,
+                                                       TitleCount = g.Count()
+                                                   });
             }
 
 
