@@ -106,6 +106,51 @@ namespace DVDRental.Controllers
             return View(memberLoans);
         }
 
+
+        public async Task<IActionResult> memberLoanStatus(string searchString)
+        {
+            //var user = UserManager.FindById(User.Identity.GetUserId());
+            var dvdCopyList = _context.DVDCopies.ToList();
+            //var userDetails = "HIVE MAGICK FUCKERY";
+            //var userShopID = userDetails.ShopID;
+            var dvdTitle = _context.DVDTitles.ToList();
+            var castMember = _context.CastMembers.ToList();
+            var actor = _context.Actors.ToList();
+            var members = _context.Members.ToList();
+            var loan = _context.Loans.ToList();
+
+
+
+            var memberLoanStatus = (from m in members
+                              join l in loan.Where(l=>l.DateRetured==null)
+                              on m.MemberNumber equals l.MemberNumber
+                              join mCat in _context.MembershipCategories.ToList()
+                              on m.MembershipCategoryNumber equals mCat.MembershipCategoryNumber
+                                select new MemberLoanStatusVM
+                                {
+                                  MemberNumber = m.MemberNumber,
+                                  MemberFirstName = m.MemberFirstName,
+                                  MemberLastName = m.MemberLastName,
+                                  MemberAddress = m.MemberAddress,
+                                  MemberDOB = m.MemberDOB,
+                                  MembershipCategory = mCat.MembershipCategoryDescription.ToString(),
+                                  CategoryTotalLoans = mCat.MembershipCategoryTotalLoans
+
+                              }).GroupBy(x => x.MemberNumber).Select(g => new MemberLoanStatusVM
+                              {
+                                  MemberNumber = g.Key,
+                                  MemberFirstName = g.FirstOrDefault().MemberFirstName,
+                                  MemberLastName = g.FirstOrDefault().MemberLastName,
+                                  MemberAddress = g.FirstOrDefault().MemberAddress,
+                                  MemberDOB = g.FirstOrDefault().MemberDOB,
+                                  MembershipCategory = g.FirstOrDefault().MembershipCategory,
+                                  CategoryTotalLoans = g.FirstOrDefault().CategoryTotalLoans,
+                                  MemberLoanCount = g.Count(),
+                                  Remark = (g.FirstOrDefault().CategoryTotalLoans < g.Count()) ? "Too Many DVDs" : "Valid No. of DVDs"
+                              });
+            return View(memberLoanStatus);
+        }
+
         // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
         {
