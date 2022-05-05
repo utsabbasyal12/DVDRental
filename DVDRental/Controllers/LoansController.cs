@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
 
+
 namespace DVDRental.Controllers
 {
     public class LoansController : Controller
@@ -49,6 +50,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Loans/Create
+
         public IActionResult Create()
         {
             ViewData["CopyNumber"] = new SelectList(_context.DVDCopies, "CopyNumber", "CopyNumber");
@@ -70,12 +72,54 @@ namespace DVDRental.Controllers
                 var memberDOB = member[0].MemberDOB;
                 int age = 0;
                 age = DateTime.Now.Subtract(memberDOB).Days / 365;
-                if (age < 18)
+                //var shopList = _context.Shop.ToList();
+                var memberList = _context.Members;
+                var dvdCopyList = _context.DVDCopies;
+                var dvdTitleList = _context.DVDTitles;
+                var studio = _context.Studios;
+                var producer = _context.Producers;
+                var loans = _context.Loans;
+                var dvdCategory = _context.DVDCategory;
+                var selectedCopyNumber = loan.CopyNumber;
+                var selectedCopy = dvdCopyList.Where(x => x.CopyNumber == selectedCopyNumber);
+                var ageRestricted = (from sc in selectedCopy
+                                     join dt in dvdTitleList
+                                     on sc.DVDNumber equals dt.DVDNumber
+                                     join dcat in dvdCategory
+                                     on dt.CategoryNumber equals dcat.CategoryNumber
+                                     select new
+                                     {
+                                         dcat.AgeRestricted
+
+                                     }).ToList();
+                var restricted = ageRestricted[0].AgeRestricted.ToString();
+
+
+                if (age >= 18)
                 {
                     _context.Add(loan);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
+                else if (age < 18 && restricted != "NotRestricted")
+                {
+                    _context.Add(loan);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    //ShowAgePugenaMessage
+                    //FlashMessage.Warning("Your error message");
+                    ModelState.AddModelError("Error", "You are under-age to rent this DVD copy.");
+                  //  return RedirectToAction("Error", "Home");
+                    
+                }
+
+                //_context.Add(loan);
+                //await _context.SaveChangesAsync();
+                //return RedirectToAction(nameof(Index));
+
             }
             ViewData["CopyNumber"] = new SelectList(_context.DVDCopies, "CopyNumber", "CopyNumber", loan.CopyNumber);
             ViewData["LoanTypeNumber"] = new SelectList(_context.LoanTypes, "LoanTypeNumber", "LoanTypeNumber", loan.LoanTypeNumber);

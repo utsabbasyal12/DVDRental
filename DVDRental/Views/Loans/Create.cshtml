@@ -1,6 +1,7 @@
 ﻿@using DVDRental.Enums
 @model DVDRental.Models.Loan
 
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -9,6 +10,13 @@
 
 <h4>Loan</h4>
 <hr />
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+{
+    <div class="alert alert-
+       <strong>Error!</strong> danger">@ViewData.ModelState["Error"].Errors.First().ErrorMessage
+    </div>
+}
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -25,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateRetured" class="control-label"></label>
-                <input asp-for="DateRetured" class="form-control" />
+                <input asp-for="DateRetured" class="form-control" disabled />
                 <span asp-validation-for="DateRetured" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -50,6 +58,16 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script type="text/javascript">
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+        {
+            <text>
+            $(document).ready(function() {
+                alert('@ViewData.ModelState["Error"].Errors.First().ErrorMessage');
+            });
+            </text>
+        }
+    </script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
