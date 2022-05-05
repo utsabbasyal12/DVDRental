@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
+using DVDRental.Models.ViewModels;
 
 namespace DVDRental.Controllers
 {
@@ -49,6 +50,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Loans/Create
+
         public IActionResult Create()
         {
             ViewData["CopyNumber"] = new SelectList(_context.DVDCopies, "CopyNumber", "CopyNumber");
@@ -70,12 +72,90 @@ namespace DVDRental.Controllers
                 var memberDOB = member[0].MemberDOB;
                 int age = 0;
                 age = DateTime.Now.Subtract(memberDOB).Days / 365;
-                if (age < 18)
+                //var shopList = _context.Shop.ToList();
+                var chargeFlag = false;
+                var memberList = _context.Members;
+                var dvdCopyList = _context.DVDCopies;
+                var dvdTitleList = _context.DVDTitles;
+                var studio = _context.Studios;
+                var producer = _context.Producers;
+                var loans = _context.Loans;
+                var dvdCategory = _context.DVDCategory;
+                var selectedCopyNumber = loan.CopyNumber;
+                var selectedCopy = dvdCopyList.Where(x => x.CopyNumber == selectedCopyNumber);
+                var selectedMember = memberList.Where(x => x.MemberNumber == loan.MemberNumber);
+                var curentLoanCount = (from l in loans.Where(l => l.DateRetured == null)
+                                       join m in selectedMember
+                                    on l.MemberNumber equals m.MemberNumber
+                                       group l by new { l.MemberNumber } into g
+                                       select new CountVM
+                                       {
+                                           Count = g.Count()
+                                       }).FirstOrDefault();
+                var currentLoanCountInt = curentLoanCount.Count;
+
+                var maxLoans = (from m in selectedMember
+                                join mc in _context.MembershipCategories
+                                on m.MembershipCategoryNumber equals mc.MembershipCategoryNumber
+                                select new CountVM
+                                {
+                                    Count = mc.MembershipCategoryTotalLoans
+                                }).FirstOrDefault();
+                var maxLoanInt = maxLoans.Count;
+
+                var ageRestricted = (from sc in selectedCopy
+                                     join dt in dvdTitleList
+                                     on sc.DVDNumber equals dt.DVDNumber
+                                     join dcat in dvdCategory
+                                     on dt.CategoryNumber equals dcat.CategoryNumber
+                                     select new
+                                     {
+                                         dcat.AgeRestricted
+
+                                     }).ToList();
+                var restricted = ageRestricted[0].AgeRestricted.ToString();
+                var selectedDvdTitle = dvdCopyList.Where(dc => dc.CopyNumber == loan.CopyNumber)
+                        .Join(dvdTitleList,
+                        copy => copy.DVDNumber,
+                        title => title.DVDNumber,
+                        (dvdCopyList, title) => title).FirstOrDefault();
+                var standardCharge = selectedDvdTitle.StandardCharge;
+
+                //charge calculation
+                var loanDuration = (loan.DateDue - loan.DateOut).TotalDays;
+                var charge = loanDuration * (Decimal.ToDouble(standardCharge));
+                if (age >= 18 && (currentLoanCountInt < maxLoanInt))
                 {
                     _context.Add(loan);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    chargeFlag = true;
+                    //return RedirectToAction(nameof(Index));
                 }
+                else if (age < 18 && restricted != "NotRestricted" && (currentLoanCountInt < maxLoanInt))
+                {
+                    _context.Add(loan);
+                    await _context.SaveChangesAsync();
+                    chargeFlag = true;
+                   // return RedirectToAction(nameof(Index));
+                }
+                else if (currentLoanCountInt >= maxLoanInt)
+                {
+                    ModelState.AddModelError("Error", "Maximum loan limit exceeded.");
+                }
+                else
+                {
+                    //ShowAgePugenaMessage
+                    //FlashMessage.Warning("Your error message");
+                    ModelState.AddModelError("Error", "You are under-age to rent this DVD copy.");
+                  //  return RedirectToAction("Error", "Home");
+                    
+                }
+                if (chargeFlag == true)
+                {
+                    ModelState.AddModelError("Error", "The total amount is : " + charge);
+                }
+
+
             }
             ViewData["CopyNumber"] = new SelectList(_context.DVDCopies, "CopyNumber", "CopyNumber", loan.CopyNumber);
             ViewData["LoanTypeNumber"] = new SelectList(_context.LoanTypes, "LoanTypeNumber", "LoanTypeNumber", loan.LoanTypeNumber);
