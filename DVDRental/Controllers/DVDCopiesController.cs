@@ -82,6 +82,41 @@ namespace DVDRental.Controllers
             return View(copyLastLoanDetails);
         }
 
+        public async Task<IActionResult> LoanedCopies()
+        {
+            var dvdCopies = _context.DVDCopies.ToList();
+            var dvdTitles = _context.DVDTitles.ToList();
+            var loans = _context.Loans.ToList();
+            var members = _context.Members.ToList();
+
+            var LoanedCopyDetails = (from dc in dvdCopies
+                                     join l in loans.Where(l => l.DateRetured == null)
+                                     on dc.CopyNumber equals l.CopyNumber
+                                     join dt in dvdTitles
+                                     on dc.DVDNumber equals dt.DVDNumber
+                                     join m in members
+                                     on l.MemberNumber equals m.MemberNumber
+
+                                     select new LoanedCopiesVM
+                                     {
+                                         DVDTitle = dt.Title,
+                                         DateOut = l.DateOut,
+                                         CopyNumber = dc.CopyNumber,
+                                         MemberFirstName = m.MemberFirstName,
+                                         MemberLastName = m.MemberLastName,
+                                     }).OrderBy(x=>x.DateOut).ThenBy(x=>x.DVDTitle);
+      
+            return View(LoanedCopyDetails);
+        }
+
+
+
+
+
+
+
+
+
         // GET: DVDCopies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
