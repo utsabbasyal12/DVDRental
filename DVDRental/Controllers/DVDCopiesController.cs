@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
+using DVDRental.Models.ViewModels;
 
 namespace DVDRental.Controllers
 {
@@ -21,10 +22,64 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDCopies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int searchString)
         {
-            var appDBContext = _context.DVDCopies.Include(d => d.DVDTitle);
-            return View(await appDBContext.ToListAsync());
+            //var user = UserManager.FindById(User.Identity.GetUserId());
+            var dvdCopyList = _context.DVDCopies.ToList();
+            //var userDetails = "HIVE MAGICK FUCKERY";
+            //var userShopID = userDetails.ShopID;
+            var dvdTitle = _context.DVDTitles.ToList();
+            var member = _context.Members.ToList();
+            var actor = _context.Actors.ToList();
+            var loan = _context.Loans.ToList();
+
+            var copyLastLoanDetails = (from dc in dvdCopyList
+                                              join dt in dvdTitle
+                                              on dc.DVDNumber equals dt.DVDNumber
+                                              join l in loan
+                                              on dc.CopyNumber equals l.CopyNumber
+                                              join m in member 
+                                              on l.MemberNumber equals m.MemberNumber  
+                                              select new DVDCopiesIndexVM
+                                              {
+                                                MemberFirstName = m.MemberFirstName,
+                                                MemberLastName = m.MemberLastName,
+                                                DateOut = l.DateOut,
+                                                DateDue = l.DateDue,
+                                                DateReturned = l.DateRetured,
+                                                DVDTitle = dt.Title
+                                              }).ToList();
+
+            if (!String.IsNullOrEmpty(searchString.ToString()))
+            {
+                var selectedCopy = dvdCopyList.Where(dc => dc.CopyNumber == searchString).ToList();
+
+                var lastLoan = selectedCopy.Join(loan,
+                                copy => copy.CopyNumber,
+                                loan => loan.CopyNumber,
+                                (selectedCopy, loan) => loan
+                                ).OrderBy(l => l.DateOut).LastOrDefault();
+
+                copyLastLoanDetails = (from dc in selectedCopy
+                                        join dt in dvdTitle
+                                        on dc.DVDNumber equals dt.DVDNumber
+                                        join l in loan.Where(l => l.LoanNumber == lastLoan.LoanNumber)
+                                        on dc.CopyNumber equals l.CopyNumber
+                                        join m in member
+                                        on l.MemberNumber equals m.MemberNumber
+                                        select new DVDCopiesIndexVM
+                                        {
+                                            MemberFirstName = m.MemberFirstName,
+                                            MemberLastName = m.MemberLastName,
+                                            DateOut = l.DateOut,
+                                            DateDue = l.DateDue,
+                                            DateReturned = l.DateRetured,
+                                            DVDTitle = dt.Title,
+                                            CopyNumber = dc.CopyNumber
+                                        }).ToList();
+            }
+
+            return View(copyLastLoanDetails);
         }
 
         // GET: DVDCopies/Details/5
