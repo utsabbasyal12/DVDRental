@@ -112,7 +112,7 @@ namespace DVDRental.Controllers
             var castMember = _context.CastMembers.ToList();
             var actor = _context.Actors.ToList();
 
-            var dvdTitlesWithSelectedActor = (from dvdCopy in dvdCopyList
+            var dvdCopiesWithSelectedActor = (from dvdCopy in dvdCopyList
                                               join dvd in dvdTitle
                                               on dvdCopy.DVDNumber equals dvd.DVDNumber
                                               join cast in castMember
@@ -139,14 +139,12 @@ namespace DVDRental.Controllers
                             (dvdCopy, dvdTitle) => dvdTitle
                             ).Distinct();
 
-                var requestActorNumber = searchString;
-
-                dvdTitlesWithSelectedActor = (from dvdCopy in dvdCopyList
+                dvdCopiesWithSelectedActor = (from dvdCopy in dvdCopyList
                                               join dvd in dvdTitle
                                               on dvdCopy.DVDNumber equals dvd.DVDNumber
                                               join cast in castMember
                                               on dvd.DVDNumber equals cast.DVDNumber
-                                              join act in actor.Where(x => x.ActorSurname == requestActorNumber)
+                                              join act in actor.Where(x => x.ActorSurname == searchString)
                                               on cast.ActorId equals act.ActorId
 
                                               select new DVDTitleSearchCopyVM
@@ -163,8 +161,40 @@ namespace DVDRental.Controllers
 
             //    //linq1 end
 
-            return View(dvdTitlesWithSelectedActor);
+            return View(dvdCopiesWithSelectedActor);
         }
+
+        public async Task<IActionResult> ListCast() {
+            var dvdCopyList = _context.DVDCopies.ToList();
+            //var userDetails = "HIVE MAGICK FUCKERY";
+            //var userShopID = userDetails.ShopID;
+            var dvdTitle = _context.DVDTitles.ToList();
+            var castMember = _context.CastMembers.ToList();
+            var actor = _context.Actors.ToList();
+            var studio = _context.Studios.ToList();
+            var producer = _context.Producers.ToList();
+
+            var titlesAndCast = (from dt in dvdTitle
+                      join s in studio
+                      on dt.StudioId equals s.StudioId
+                      join c in castMember
+                      on dt.DVDNumber equals c.DVDNumber
+                      join a in actor
+                      on c.ActorId equals a.ActorId
+                      join p in producer
+                      on dt.ProducerNumber equals p.ProducerNumber
+                      select new DVDTitleListCastVM
+                      {
+                          Studio = s.StudioName,
+                          Producer = p.ProducerName,
+                          ActorFirstName = a.ActorFirstName,
+                          ActorLastName = a.ActorSurname,
+                          DVDTitle = dt.Title,
+                          DateReleased = dt.DateRelease
+                      }).OrderBy(x=>x.DateReleased).ThenBy(x=>x.ActorLastName);
+
+            return View(titlesAndCast);
+                }
 
         // GET: DVDTitles/Details/5
         public async Task<IActionResult> Details(int? id)
