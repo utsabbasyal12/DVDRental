@@ -171,6 +171,7 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
+
             var loan = await _context.Loans.FindAsync(id);
             if (loan == null)
             {
@@ -189,6 +190,15 @@ namespace DVDRental.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("LoanNumber,DateOut,DateDue,DateRetured,LoanTypeNumber,CopyNumber,MemberNumber")] Loan loan)
         {
+            var memberList = _context.Members;
+            var dvdCopyList = _context.DVDCopies;
+            var dvdTitleList = _context.DVDTitles;
+            var studio = _context.Studios;
+            var producer = _context.Producers;
+            var loans = _context.Loans;
+            var dvdCategory = _context.DVDCategory;
+            var selectedLoanNumber = loan.LoanNumber;
+            var selectedLoan = loans.Where(x => x.LoanNumber == selectedLoanNumber).FirstOrDefault();
             if (id != loan.LoanNumber)
             {
                 return NotFound();
@@ -198,8 +208,11 @@ namespace DVDRental.Controllers
             {
                 try
                 {
-                    _context.Update(loan);
-                    await _context.SaveChangesAsync();
+                    if (selectedLoan.DateRetured == null) {
+                        selectedLoan.DateRetured = DateTime.Now;
+                        _context.Loans.Update(selectedLoan);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {

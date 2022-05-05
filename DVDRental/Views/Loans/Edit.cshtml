@@ -1,12 +1,10 @@
 ﻿@model DVDRental.Models.Loan
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Return";
 }
 
-<h1>Edit</h1>
-
-<h4>Loan</h4>
+<h1>Return a DVD</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,36 +13,31 @@
             <input type="hidden" asp-for="LoanNumber" />
             <div class="form-group">
                 <label asp-for="DateOut" class="control-label"></label>
-                <input asp-for="DateOut" class="form-control" />
+                <input asp-for="DateOut" class="form-control" disabled />
                 <span asp-validation-for="DateOut" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DateDue" class="control-label"></label>
-                <input asp-for="DateDue" class="form-control" />
+                <input asp-for="DateDue" class="form-control" disabled />
                 <span asp-validation-for="DateDue" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateRetured" class="control-label"></label>
-                <input asp-for="DateRetured" class="form-control" />
-                <span asp-validation-for="DateRetured" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="LoanTypeNumber" class="control-label"></label>
-                <select asp-for="LoanTypeNumber" class="form-control" asp-items="ViewBag.LoanTypeNumber"></select>
+                <select asp-for="LoanTypeNumber" class="form-control" asp-items="ViewBag.LoanTypeNumber" disabled></select>
                 <span asp-validation-for="LoanTypeNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CopyNumber" class="control-label"></label>
-                <select asp-for="CopyNumber" class="form-control" asp-items="ViewBag.CopyNumber"></select>
+                <select asp-for="CopyNumber" class="form-control" asp-items="ViewBag.CopyNumber" disabled></select>
                 <span asp-validation-for="CopyNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="MemberNumber" class="control-label"></label>
-                <select asp-for="MemberNumber" class="form-control" asp-items="ViewBag.MemberNumber"></select>
+                <select asp-for="MemberNumber" class="form-control" asp-items="ViewBag.MemberNumber" disabled ></select>
                 <span asp-validation-for="MemberNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Return DVD" class="btn btn-primary" />
             </div>
         </form>
     </div>
