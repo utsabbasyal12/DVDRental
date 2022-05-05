@@ -47,7 +47,8 @@ namespace DVDRental.Controllers
                                                 DateOut = l.DateOut,
                                                 DateDue = l.DateDue,
                                                 DateReturned = l.DateRetured,
-                                                DVDTitle = dt.Title
+                                                DVDTitle = dt.Title,
+                                                CopyNumber = dc.CopyNumber
                                               }).ToList();
 
             if (!String.IsNullOrEmpty(searchString.ToString()))
@@ -59,27 +60,32 @@ namespace DVDRental.Controllers
                                 loan => loan.CopyNumber,
                                 (selectedCopy, loan) => loan
                                 ).OrderBy(l => l.DateOut).LastOrDefault();
+                if (lastLoan == null)
+                {
+                    return View(copyLastLoanDetails);
+                }
+                    copyLastLoanDetails = (from dc in selectedCopy
+                                           join dt in dvdTitle
+                                           on dc.DVDNumber equals dt.DVDNumber
+                                           join l in loan.Where(l => l.LoanNumber == lastLoan.LoanNumber)
+                                           on dc.CopyNumber equals l.CopyNumber
+                                           join m in member
+                                           on l.MemberNumber equals m.MemberNumber
+                                           select new DVDCopiesIndexVM
+                                           {
+                                               MemberFirstName = m.MemberFirstName,
+                                               MemberLastName = m.MemberLastName,
+                                               DateOut = l.DateOut,
+                                               DateDue = l.DateDue,
+                                               DateReturned = l.DateRetured,
+                                               DVDTitle = dt.Title,
+                                               CopyNumber = dc.CopyNumber
 
-                copyLastLoanDetails = (from dc in selectedCopy
-                                        join dt in dvdTitle
-                                        on dc.DVDNumber equals dt.DVDNumber
-                                        join l in loan.Where(l => l.LoanNumber == lastLoan.LoanNumber)
-                                        on dc.CopyNumber equals l.CopyNumber
-                                        join m in member
-                                        on l.MemberNumber equals m.MemberNumber
-                                        select new DVDCopiesIndexVM
-                                        {
-                                            MemberFirstName = m.MemberFirstName,
-                                            MemberLastName = m.MemberLastName,
-                                            DateOut = l.DateOut,
-                                            DateDue = l.DateDue,
-                                            DateReturned = l.DateRetured,
-                                            DVDTitle = dt.Title,
-                                            CopyNumber = dc.CopyNumber
-                                        }).ToList();
+                                           }).ToList();
             }
 
-            return View(copyLastLoanDetails);
+                return View(copyLastLoanDetails);
+            
         }
 
         public async Task<IActionResult> LoanedCopies()
