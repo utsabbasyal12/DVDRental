@@ -152,7 +152,7 @@ namespace DVDRental.Controllers
                 }
                 if (chargeFlag == true)
                 {
-                    ModelState.AddModelError("Error", "The total amount is : " + charge);
+                    ModelState.AddModelError("Error", "DVD loan successful. The total amount is : " + charge);
                 }
 
 
@@ -198,7 +198,8 @@ namespace DVDRental.Controllers
             var loans = _context.Loans;
             var dvdCategory = _context.DVDCategory;
             var selectedLoanNumber = loan.LoanNumber;
-            var selectedLoan = loans.Where(x => x.LoanNumber == selectedLoanNumber).FirstOrDefault();
+            var selectedLoanList = loans.Where(x => x.LoanNumber == selectedLoanNumber).ToList();
+            var selectedLoanFirstOrDefault = loans.Where(x => x.LoanNumber == selectedLoanNumber).FirstOrDefault();
             if (id != loan.LoanNumber)
             {
                 return NotFound();
@@ -207,12 +208,37 @@ namespace DVDRental.Controllers
             if (ModelState.IsValid)
             {
                 try
+
                 {
-                    if (selectedLoan.DateRetured == null) {
-                        selectedLoan.DateRetured = DateTime.Now;
-                        _context.Loans.Update(selectedLoan);
+                    var dvdTitle = selectedLoanList.Join(dvdCopyList,
+                    loan => loan.CopyNumber,
+                    copy => copy.CopyNumber,
+                    (loan, copy) => copy
+                    ).Join(dvdTitleList,
+                    copy => copy.DVDNumber,
+                    title => title.DVDNumber,
+                    (copy, title) => title
+                 );
+                    var penaltyCharge = dvdTitle.FirstOrDefault().PenaltyCharge;
+                    //charge calculation
+                    var loanDuration = (loan.DateDue - loan.DateOut).TotalDays;
+                    var penaltyAmount = loanDuration * (Decimal.ToDouble(penaltyCharge));
+                    var penaltyFlag = false;
+                    if (selectedLoanFirstOrDefault.DateRetured == null) {
+                        selectedLoanFirstOrDefault.DateRetured = DateTime.Now;
+                        _context.Loans.Update(selectedLoanFirstOrDefault);
                         await _context.SaveChangesAsync();
                     }
+                    var dateComparision = DateTime.Compare(loan.DateDue, (DateTime)loan.DateRetured);
+                    if (dateComparision < 0)
+                    {
+                        penaltyFlag = true;
+                    }
+                    if (penaltyFlag == true)
+                    {
+                        ModelState.AddModelError("Error", "DVD returned late! The total penalty amount is : " + penaltyCharge);
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
