@@ -27,8 +27,80 @@ namespace DVDRental.Controllers
         [Authorize]
         public async Task<IActionResult> Index(string searchString)
         {
-            var appDBContext = _context.DVDTitles.Include(d => d.DVDCategory).Include(d => d.Producers).Include(d => d.Studios);
-            return View(await appDBContext.ToListAsync());
+            //var user = UserManager.FindById(User.Identity.GetUserId());
+            var dvdCopyList = _context.DVDCopies.ToList();
+            //var userDetails = "HIVE MAGICK FUCKERY";
+            //var userShopID = userDetails.ShopID;
+            var dvdTitle = _context.DVDTitles.ToList();
+            var castMember = _context.CastMembers.ToList();
+            var actor = _context.Actors.ToList();
+
+            var dvdTitlesWithSelectedActor = (from dvd in dvdTitle
+                                                  //join cast in castMember
+                                                  //on dvd.DVDNumber equals cast.DVDNumber
+                                                  //join act in actor
+                                                  //on cast.ActorId equals act.ActorId
+                                              join produc in _context.Producers.ToList()
+                                              on dvd.ProducerNumber equals produc.ProducerNumber
+                                              join stud in _context.Studios.ToList()
+                                              on dvd.StudioId equals stud.StudioId
+                                              join dvdCat in _context.DVDCategory.ToList()
+                                              on dvd.CategoryNumber equals dvdCat.CategoryNumber
+                                              select new DVDTitleIndexVM
+                                              {
+                                                  //Actor = act.ActorSurname,
+                                                  DVDCategory = dvdCat.CategoryDescription.ToString(),
+                                                  DVDTitle = dvd.Title,
+                                                  DVDNumber = dvd.DVDNumber,
+                                                  Producer = produc.ProducerName,
+                                                  Studio = stud.StudioName,
+                                                  PenaltyCharge = dvd.PenaltyCharge,
+                                                  StandardCharge = dvd.StandardCharge,
+                                                  DateReleased = dvd.DateRelease
+                                              }).ToList();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                //linq1 start
+                //var shopList = _context.Shop.ToList();
+
+                var dvdTitles = dvdCopyList.Join(dvdTitle,
+                            dvdCopy => dvdCopy.DVDNumber,
+                            dvdTitle => dvdTitle.DVDNumber,
+                            (dvdCopy, dvdTitle) => dvdTitle
+                            ).Distinct();
+
+                var requestActorNumber = searchString;
+
+                dvdTitlesWithSelectedActor = (from dvd in dvdTitle
+                                              join cast in castMember
+                                              on dvd.DVDNumber equals cast.DVDNumber
+                                              join act in actor.Where(x => x.ActorSurname == requestActorNumber)
+                                              on cast.ActorId equals act.ActorId
+                                              join produc in _context.Producers.ToList()
+                                            on dvd.ProducerNumber equals produc.ProducerNumber
+                                              join stud in _context.Studios.ToList()
+                                              on dvd.StudioId equals stud.StudioId
+                                              join dvdCat in _context.DVDCategory.ToList()
+                                              on dvd.CategoryNumber equals dvdCat.CategoryNumber
+                                              select new DVDTitleIndexVM
+                                              {
+                                                  Actor = act.ActorSurname,
+                                                  DVDCategory = dvdCat.CategoryDescription.ToString(),
+                                                  DVDTitle = dvd.Title,
+                                                  DVDNumber = dvd.DVDNumber,
+                                                  Producer = produc.ProducerName,
+                                                  Studio = stud.StudioName,
+                                                  PenaltyCharge = dvd.PenaltyCharge,
+                                                  StandardCharge = dvd.StandardCharge,
+                                                  DateReleased = dvd.DateRelease
+                                              }).ToList();
+            }
+
+
+            //    //linq1 end
+
+            return View(dvdTitlesWithSelectedActor);
         }
 
         //Feature 2
@@ -54,10 +126,10 @@ namespace DVDRental.Controllers
                                                   DVDTitle = dvd.Title
                                               }).ToList()
                                               .GroupBy(x => x.DVDTitle).Select(g => new DVDTitleSearchCopyVM
-                                               {
-                                                   DVDTitle = g.Key,
-                                                   TitleCount = g.Count()
-                                               });
+                                              {
+                                                  DVDTitle = g.Key,
+                                                  TitleCount = g.Count()
+                                              });
 
 
             if (!String.IsNullOrEmpty(searchString))
@@ -85,10 +157,10 @@ namespace DVDRental.Controllers
                                                   DVDTitle = dvd.Title
                                               }).ToList()
                                                   .GroupBy(x => x.DVDTitle).Select(g => new DVDTitleSearchCopyVM
-                                                   {
-                                                       DVDTitle = g.Key,
-                                                       TitleCount = g.Count()
-                                                   });
+                                                  {
+                                                      DVDTitle = g.Key,
+                                                      TitleCount = g.Count()
+                                                  });
             }
 
 
@@ -98,7 +170,8 @@ namespace DVDRental.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> ListCast() {
+        public async Task<IActionResult> ListCast()
+        {
             var dvdCopyList = _context.DVDCopies.ToList();
             //var userDetails = "HIVE MAGICK FUCKERY";
             //var userShopID = userDetails.ShopID;
@@ -109,26 +182,26 @@ namespace DVDRental.Controllers
             var producer = _context.Producers.ToList();
 
             var titlesAndCast = (from dt in dvdTitle
-                      join s in studio
-                      on dt.StudioId equals s.StudioId
-                      join c in castMember
-                      on dt.DVDNumber equals c.DVDNumber
-                      join a in actor
-                      on c.ActorId equals a.ActorId
-                      join p in producer
-                      on dt.ProducerNumber equals p.ProducerNumber
-                      select new DVDTitleListCastVM
-                      {
-                          Studio = s.StudioName,
-                          Producer = p.ProducerName,
-                          ActorFirstName = a.ActorFirstName,
-                          ActorLastName = a.ActorSurname,
-                          DVDTitle = dt.Title,
-                          DateReleased = dt.DateRelease
-                      }).OrderBy(x=>x.DateReleased).ThenBy(x=>x.ActorLastName);
+                                 join s in studio
+                                 on dt.StudioId equals s.StudioId
+                                 join c in castMember
+                                 on dt.DVDNumber equals c.DVDNumber
+                                 join a in actor
+                                 on c.ActorId equals a.ActorId
+                                 join p in producer
+                                 on dt.ProducerNumber equals p.ProducerNumber
+                                 select new DVDTitleListCastVM
+                                 {
+                                     Studio = s.StudioName,
+                                     Producer = p.ProducerName,
+                                     ActorFirstName = a.ActorFirstName,
+                                     ActorLastName = a.ActorSurname,
+                                     DVDTitle = dt.Title,
+                                     DateReleased = dt.DateRelease
+                                 }).OrderBy(x => x.DateReleased).ThenBy(x => x.ActorLastName);
 
             return View(titlesAndCast);
-                }
+        }
         [Authorize]
         public async Task<IActionResult> OldCopies()
         {
@@ -136,14 +209,14 @@ namespace DVDRental.Controllers
             var dvdTitles = _context.DVDTitles.ToList();
 
             var OldCopies = (from dc in dvdCopies
-                            join dt in dvdTitles.Where(dt => (DateTime.Now.Subtract(dt.DateRelease).TotalDays >= 365))
-                            on dc.DVDNumber equals dt.DVDNumber
-                            select new OldCopiesVM
-                            {
-                                CopyNumber = dc.CopyNumber,
-                                DateReleased = dt.DateRelease,
-                                Title = dt.Title
-                            });
+                             join dt in dvdTitles.Where(dt => (DateTime.Now.Subtract(dt.DateRelease).TotalDays >= 365))
+                             on dc.DVDNumber equals dt.DVDNumber
+                             select new OldCopiesVM
+                             {
+                                 CopyNumber = dc.CopyNumber,
+                                 DateReleased = dt.DateRelease,
+                                 Title = dt.Title
+                             });
 
 
             return View(OldCopies);
@@ -204,9 +277,9 @@ namespace DVDRental.Controllers
             var dvdTitles = _context.DVDTitles.ToList();
             var studios = _context.Studios.ToList();
             var producers = _context.Producers.ToList();
-            var dvdTitlesExists = (dvdTitles.Where(dt => dt.Title == dVDTitleCreateVM.Title).FirstOrDefault() == null)? false:true;
-            var studioExists = (studios.Where(s => s.StudioName == dVDTitleCreateVM.StudioName).FirstOrDefault() == null)? false:true;
-            var producerExists = (producers.Where(p => p.ProducerName == dVDTitleCreateVM.ProducerName).FirstOrDefault() == null)? false:true;
+            var dvdTitlesExists = (dvdTitles.Where(dt => dt.Title == dVDTitleCreateVM.Title).FirstOrDefault() == null) ? false : true;
+            var studioExists = (studios.Where(s => s.StudioName == dVDTitleCreateVM.StudioName).FirstOrDefault() == null) ? false : true;
+            var producerExists = (producers.Where(p => p.ProducerName == dVDTitleCreateVM.ProducerName).FirstOrDefault() == null) ? false : true;
             if (ModelState.IsValid)
             {
                 if (!dvdTitlesExists)
@@ -220,7 +293,7 @@ namespace DVDRental.Controllers
                         Studio st = new Studio();
                         st.StudioName = dVDTitleCreateVM.StudioName;
                         _context.Add(st);
-                    await _context.SaveChangesAsync();
+                        await _context.SaveChangesAsync();
                         studioID = _context.Studios.ToList().Where(s => s.StudioName == st.StudioName).FirstOrDefault().StudioId;
                     }
                     if (producerExists)
@@ -232,7 +305,7 @@ namespace DVDRental.Controllers
                         Producer pr = new Producer();
                         pr.ProducerName = dVDTitleCreateVM.ProducerName;
                         _context.Add(pr);
-                    await _context.SaveChangesAsync();
+                        await _context.SaveChangesAsync();
                         producerID = _context.Producers.ToList().Where(p => p.ProducerName == pr.ProducerName).FirstOrDefault().ProducerNumber;
                     }
                     DVDTitle dvdt = new DVDTitle();
@@ -257,7 +330,7 @@ namespace DVDRental.Controllers
             //ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName", dVDTitle.ProducerNumber);
             //ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName", dVDTitle.StudioId);
 
-            
+
 
             return View(dVDTitleCreateVM);
         }
@@ -382,29 +455,29 @@ namespace DVDRental.Controllers
             var dvdID = id;
             var castList = CastMembers;
 
-            foreach (int actorID in castList )
+            foreach (int actorID in castList)
             {
                 var castMembers = _context.CastMembers.ToList();
                 var dvdTitles = _context.DVDTitles.ToList();
                 var lastNo = castMembers.OrderBy(cm => cm.Id).LastOrDefault().Id;
 
-                var actorExists = (from dt in dvdTitles.Where(dt=>dt.DVDNumber==dvdID)
-                                  join cm in castMembers
-                                  on dt.DVDNumber equals cm.DVDNumber
-                                  select cm).Where(x=>x.ActorId==actorID).FirstOrDefault() !=null;
+                var actorExists = (from dt in dvdTitles.Where(dt => dt.DVDNumber == dvdID)
+                                   join cm in castMembers
+                                   on dt.DVDNumber equals cm.DVDNumber
+                                   select cm).Where(x => x.ActorId == actorID).FirstOrDefault() != null;
 
                 if (!actorExists)
                 {
-                CastMember cmem = new CastMember();
-                cmem.DVDNumber = dvdID;
-                cmem.ActorId = actorID;
-                cmem.Id = lastNo+1;
-                _context.Add(cmem);
+                    CastMember cmem = new CastMember();
+                    cmem.DVDNumber = dvdID;
+                    cmem.ActorId = actorID;
+                    cmem.Id = lastNo + 1;
+                    _context.Add(cmem);
                     await _context.SaveChangesAsync();
 
                 }
 
-                
+
             }
 
             return View();
