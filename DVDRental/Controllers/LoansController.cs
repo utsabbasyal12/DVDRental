@@ -92,7 +92,8 @@ namespace DVDRental.Controllers
                                        {
                                            Count = g.Count()
                                        }).FirstOrDefault();
-                var currentLoanCountInt = curentLoanCount.Count;
+
+                var currentLoanCountInt = (curentLoanCount == null) ? 0 : curentLoanCount.Count ;
 
                 var maxLoans = (from m in selectedMember
                                 join mc in _context.MembershipCategories
@@ -229,7 +230,7 @@ namespace DVDRental.Controllers
                         _context.Loans.Update(selectedLoanFirstOrDefault);
                         await _context.SaveChangesAsync();
                     }
-                    var dateComparision = DateTime.Compare(loan.DateDue, (DateTime)loan.DateRetured);
+                    var dateComparision = DateTime.Compare(loan.DateDue, (DateTime)selectedLoanFirstOrDefault.DateRetured);
                     if (dateComparision < 0)
                     {
                         penaltyFlag = true;
@@ -251,7 +252,7 @@ namespace DVDRental.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
             }
             ViewData["CopyNumber"] = new SelectList(_context.DVDCopies, "CopyNumber", "CopyNumber", loan.CopyNumber);
             ViewData["LoanTypeNumber"] = new SelectList(_context.LoanTypes, "LoanTypeNumber", "LoanTypeNumber", loan.LoanTypeNumber);

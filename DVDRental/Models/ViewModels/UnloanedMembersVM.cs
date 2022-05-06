@@ -7,7 +7,7 @@
         public string? Address { get; set; }
         public string? DVDTitle { get; set; }
         public DateTime? DateOut { get; set; }
-        public double? LoanedDays { get; set; }
+        public int LoanedDays { get; set; }
 
     }
 }

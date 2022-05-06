@@ -162,11 +162,11 @@ namespace DVDRental.Controllers
             var loanedMembers = (from m in members
                                 join l in loans.Where(l => currentDate.Subtract(l.DateOut).TotalDays <= 31)
                                 on m.MemberNumber equals l.MemberNumber
-                                select m).ToList();
+                                select m).Distinct().ToList();
 
-            var unloanedMembers = members.Except(loanedMembers);                     
+            var unloanedMembers = members.Except(loanedMembers).ToList();                     
                                   
-            var memberLoanDetails = from m in unloanedMembers
+            var memberLoanDetails = (from m in unloanedMembers
                                     join l in loans
                                     on m.MemberNumber equals l.MemberNumber
                                   join dc in dVDCopies
@@ -177,13 +177,13 @@ namespace DVDRental.Controllers
                                   {
                                       DateOut = l.DateOut,
                                       DVDTitle = dt.Title,
-                                      LoanedDays = currentDate.Subtract(l.DateOut).TotalDays,
+                                      LoanedDays = Convert.ToInt32(currentDate.Subtract(l.DateOut).TotalDays),
                                       Address = m.MemberAddress,
                                       MemberFirstName = m.MemberFirstName,
                                       MemberLastName = m.MemberLastName,
-                                  };
+                                  }).ToList();
 
-            return View(unloanedMembers);
+            return View(memberLoanDetails);
         }
 
         // GET: Members/Details/5
