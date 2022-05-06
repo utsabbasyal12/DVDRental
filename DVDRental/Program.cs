@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("AppDB");;
+var connectionString = builder.Configuration.GetConnectionString("AppDB"); ;
 
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseSqlServer(connectionString));;
+    options.UseSqlServer(connectionString)); ;
 
 builder.Services.AddDefaultIdentity<DVDRentalUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<AppDBContext>();;
+    .AddEntityFrameworkStores<AppDBContext>(); ;
 
 builder.Services.AddAuthorization(options =>
 {
@@ -33,7 +33,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication(); ;
 
 app.UseAuthorization();
 
@@ -41,13 +41,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-<<<<<<< HEAD
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=DVDTitles}/{action=Index}/{id?}");
 
-=======
->>>>>>> master
 app.MapRazorPages();
 
 app.Run();
