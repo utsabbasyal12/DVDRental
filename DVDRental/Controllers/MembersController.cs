@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
 using DVDRental.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DVDRental.Controllers
 {
@@ -22,11 +23,14 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var appDBContext = _context.Members.Include(m => m.MembershipCategory);
             return View(await appDBContext.ToListAsync());
         }
+
+        [Authorize]
         public async Task<IActionResult> SearchMemberLoan(string searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -106,7 +110,7 @@ namespace DVDRental.Controllers
             return View(memberLoans);
         }
 
-
+        [Authorize]
         public async Task<IActionResult> memberLoanStatus(string searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -151,6 +155,7 @@ namespace DVDRental.Controllers
             return View(memberLoanStatus);
         }
 
+        [Authorize]
         public async Task<IActionResult> UnloanedMembers()
         {
             var members = _context.Members.ToList();
@@ -187,6 +192,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -206,6 +212,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["MembershipCategoryNumber"] = new SelectList(_context.MembershipCategories, "MembershipCategoryNumber", "MembershipCategoryNumber");
@@ -217,6 +224,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("MemberNumber,MemberLastName,MemberFirstName,MemberAddress,MemberDOB,MembershipCategoryNumber")] Member member)
         {
             if (ModelState.IsValid)
@@ -230,6 +238,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -251,6 +260,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("MemberNumber,MemberLastName,MemberFirstName,MemberAddress,MemberDOB,MembershipCategoryNumber")] Member member)
         {
             if (id != member.MemberNumber)
@@ -283,6 +293,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -304,6 +315,7 @@ namespace DVDRental.Controllers
         // POST: Members/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await _context.Members.FindAsync(id);
@@ -312,6 +324,7 @@ namespace DVDRental.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize]
         private bool MemberExists(int id)
         {
             return _context.Members.Any(e => e.MemberNumber == id);

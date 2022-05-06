@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
 using DVDRental.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DVDRental.Controllers
 {
@@ -22,6 +23,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Loans
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var appDBContext = _context.Loans.Include(l => l.DVDCopy).Include(l => l.LoanType).Include(l => l.Member);
@@ -29,6 +31,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Loans/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -50,7 +53,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Loans/Create
-
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["CopyNumber"] = new SelectList(_context.DVDCopies, "CopyNumber", "CopyNumber");
@@ -64,6 +67,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("LoanNumber,DateOut,DateDue,DateRetured,LoanTypeNumber,CopyNumber,MemberNumber")] Loan loan)
         {
             if (ModelState.IsValid)
@@ -165,6 +169,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Loans/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -189,6 +194,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("LoanNumber,DateOut,DateDue,DateRetured,LoanTypeNumber,CopyNumber,MemberNumber")] Loan loan)
         {
             var memberList = _context.Members;
@@ -262,6 +268,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Loans/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -285,6 +292,7 @@ namespace DVDRental.Controllers
         // POST: Loans/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var loan = await _context.Loans.FindAsync(id);
@@ -293,6 +301,7 @@ namespace DVDRental.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize]
         private bool LoanExists(int id)
         {
             return _context.Loans.Any(e => e.LoanNumber == id);
