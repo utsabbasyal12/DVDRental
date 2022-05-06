@@ -129,35 +129,48 @@ namespace DVDRental.Controllers
                 //charge calculation
                 var loanDuration = (loan.DateDue - loan.DateOut).TotalDays;
                 var charge = loanDuration * (Decimal.ToDouble(standardCharge));
-                if (age >= 18 && (currentLoanCountInt < maxLoanInt))
-                {
-                    _context.Add(loan);
-                    await _context.SaveChangesAsync();
-                    chargeFlag = true;
-                    //return RedirectToAction(nameof(Index));
-                }
-                else if (age < 18 && restricted != "NotRestricted" && (currentLoanCountInt < maxLoanInt))
-                {
-                    _context.Add(loan);
-                    await _context.SaveChangesAsync();
-                    chargeFlag = true;
-                   // return RedirectToAction(nameof(Index));
-                }
-                else if (currentLoanCountInt >= maxLoanInt)
-                {
-                    ModelState.AddModelError("Error", "Maximum loan limit exceeded.");
+                //checking duplicate loans
+                var loanedCopies = (from c in dvdCopyList
+                                    join l in loans.Where(l => l.DateRetured == null) 
+                                    on c.CopyNumber equals l.CopyNumber
+                                   select c).ToList();
+                var selectedCopyInLoanedCopies = loanedCopies.Where(l => l.CopyNumber == loan.CopyNumber).FirstOrDefault();
+                if (selectedCopyInLoanedCopies == null) {
+                    if (age >= 18 && (currentLoanCountInt < maxLoanInt))
+                    {
+                        _context.Add(loan);
+                        await _context.SaveChangesAsync();
+                        chargeFlag = true;
+                        //return RedirectToAction(nameof(Index));
+                    }
+                    else if (age < 18 && restricted != "NotRestricted" && (currentLoanCountInt < maxLoanInt))
+                    {
+                        _context.Add(loan);
+                        await _context.SaveChangesAsync();
+                        chargeFlag = true;
+                        // return RedirectToAction(nameof(Index));
+                    }
+                    else if (currentLoanCountInt >= maxLoanInt)
+                    {
+                        ModelState.AddModelError("Error", "Maximum loan limit exceeded.");
+                    }
+                    else
+                    {
+                        //ShowAgePugenaMessage
+                        //FlashMessage.Warning("Your error message");
+                        ModelState.AddModelError("Error", "You are under-age to rent this DVD copy.");
+                        //  return RedirectToAction("Error", "Home");
+
+                    }
+
+                    if (chargeFlag == true)
+                    {
+                        ModelState.AddModelError("Error", "DVD loan successful. The total amount is : " + charge);
+                    }
                 }
                 else
                 {
-                    //ShowAgePugenaMessage
-                    //FlashMessage.Warning("Your error message");
-                    ModelState.AddModelError("Error", "You are under-age to rent this DVD copy.");
-                  //  return RedirectToAction("Error", "Home");
-                    
-                }
-                if (chargeFlag == true)
-                {
-                    ModelState.AddModelError("Error", "DVD loan successful. The total amount is : " + charge);
+                    ModelState.AddModelError("Error", "Sorry! The DVD copy is already on loan.");
                 }
 
 
