@@ -271,11 +271,20 @@ namespace DVDRental.Controllers
         [Authorize]
         public async Task<IActionResult> Create([Bind("DVDNumber,Title,DateRelease,StandardCharge,PenaltyCharge,StudioId,ProducerNumber,CategoryNumber")] DVDTitle dVDTitle)
         {
+            var dvdTitles = _context.DVDTitles.ToList();
+            var dvdTitlesExists = (dvdTitles.Where(dt => dt.Title == dVDTitle.Title).FirstOrDefault() == null)? false:true;
             if (ModelState.IsValid)
             {
-                _context.Add(dVDTitle);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (!dvdTitlesExists)
+                {
+                    _context.Add(dVDTitle);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("Error", "Sorry! This DVD title already exists.");
+                }
             }
             ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
             ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription", dVDTitle.CategoryNumber);
