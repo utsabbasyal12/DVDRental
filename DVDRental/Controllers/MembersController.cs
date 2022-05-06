@@ -151,6 +151,41 @@ namespace DVDRental.Controllers
             return View(memberLoanStatus);
         }
 
+        public async Task<IActionResult> UnloanedMembers()
+        {
+            var members = _context.Members.ToList();
+            var loans = _context.Loans.ToList();
+            var dvdTitles = _context.DVDTitles.ToList();
+            var dVDCopies = _context.DVDCopies.ToList();
+            var currentDate = DateTime.Now;
+
+            var loanedMembers = (from m in members
+                                join l in loans.Where(l => currentDate.Subtract(l.DateOut).TotalDays <= 31)
+                                on m.MemberNumber equals l.MemberNumber
+                                select m).ToList();
+
+            var unloanedMembers = members.Except(loanedMembers);                     
+                                  
+            var memberLoanDetails = from m in unloanedMembers
+                                    join l in loans
+                                    on m.MemberNumber equals l.MemberNumber
+                                  join dc in dVDCopies
+                                  on l.CopyNumber equals dc.CopyNumber
+                                  join dt in dvdTitles
+                                  on dc.DVDNumber equals dt.DVDNumber
+                                  select new UnloanedMembersVM
+                                  {
+                                      DateOut = l.DateOut,
+                                      DVDTitle = dt.Title,
+                                      LoanedDays = currentDate.Subtract(l.DateOut).TotalDays,
+                                      Address = m.MemberAddress,
+                                      MemberFirstName = m.MemberFirstName,
+                                      MemberLastName = m.MemberLastName,
+                                  };
+
+            return View(unloanedMembers);
+        }
+
         // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -1,0 +1,61 @@
+﻿@model IEnumerable<DVDRental.Models.ViewModels.UnloanedMembersVM>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr
+            <th>
+                @Html.DisplayNameFor(model => model.MemberFirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberLastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DVDTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanedDays)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MemberLastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MemberFirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DVDTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOut)
+            </td><td>
+                @Html.DisplayFor(modelItem => item.LoanedDays)
+            </td>
+            @*<td>
+                <a asp-action="Edit" asp-route-id="@item.MemberNumber">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MemberNumber">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MemberNumber">Delete</a>
+            </td>*@
+        </tr>
+}
+    </tbody>
+</table>
