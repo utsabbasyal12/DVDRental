@@ -224,22 +224,23 @@ namespace DVDRental.Controllers
                     //charge calculation
                     var loanDuration = (loan.DateDue - loan.DateOut).TotalDays;
                     var penaltyAmount = loanDuration * (Decimal.ToDouble(penaltyCharge));
-                    var penaltyFlag = false;
+                    //var penaltyFlag = false;
                     if (selectedLoanFirstOrDefault.DateRetured == null) {
                         selectedLoanFirstOrDefault.DateRetured = DateTime.Now;
                         _context.Loans.Update(selectedLoanFirstOrDefault);
                         await _context.SaveChangesAsync();
+                        
+                        var dateComparision = DateTime.Compare(selectedLoanFirstOrDefault.DateDue.Date, (DateTime)selectedLoanFirstOrDefault.DateRetured?.Date);
+                        if (dateComparision < 0)
+                        {
+                            ModelState.AddModelError("Error", "DVD returned late! The total penalty amount is : " + penaltyCharge);
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Error", "DVD returned!");
+                        }
                     }
-                    var dateComparision = DateTime.Compare(loan.DateDue, (DateTime)selectedLoanFirstOrDefault.DateRetured);
-                    if (dateComparision < 0)
-                    {
-                        penaltyFlag = true;
-                    }
-                    if (penaltyFlag == true)
-                    {
-                        ModelState.AddModelError("Error", "DVD returned late! The total penalty amount is : " + penaltyCharge);
-                    }
-
+                   
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -257,7 +258,7 @@ namespace DVDRental.Controllers
             ViewData["CopyNumber"] = new SelectList(_context.DVDCopies, "CopyNumber", "CopyNumber", loan.CopyNumber);
             ViewData["LoanTypeNumber"] = new SelectList(_context.LoanTypes, "LoanTypeNumber", "LoanTypeNumber", loan.LoanTypeNumber);
             ViewData["MemberNumber"] = new SelectList(_context.Members, "MemberNumber", "MemberFirstName", loan.MemberNumber);
-            return View(loan);
+            return View(selectedLoanFirstOrDefault);
         }
 
         // GET: Loans/Delete/5
