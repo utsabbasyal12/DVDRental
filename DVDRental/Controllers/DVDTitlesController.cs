@@ -269,15 +269,53 @@ namespace DVDRental.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("DVDNumber,Title,DateRelease,StandardCharge,PenaltyCharge,StudioId,ProducerNumber,CategoryNumber")] DVDTitle dVDTitle)
+        public async Task<IActionResult> Create(DVDTitleCreateVM dVDTitleCreateVM)
         {
+            int studioID;
+            int producerID;
             var dvdTitles = _context.DVDTitles.ToList();
-            var dvdTitlesExists = (dvdTitles.Where(dt => dt.Title == dVDTitle.Title).FirstOrDefault() == null)? false:true;
+            var studios = _context.Studios.ToList();
+            var producers = _context.Producers.ToList();
+            var dvdTitlesExists = (dvdTitles.Where(dt => dt.Title == dVDTitleCreateVM.Title).FirstOrDefault() == null)? false:true;
+            var studioExists = (studios.Where(s => s.StudioName == dVDTitleCreateVM.StudioName).FirstOrDefault() == null)? false:true;
+            var producerExists = (producers.Where(p => p.ProducerName == dVDTitleCreateVM.ProducerName).FirstOrDefault() == null)? false:true;
             if (ModelState.IsValid)
             {
                 if (!dvdTitlesExists)
                 {
-                    _context.Add(dVDTitle);
+                    if (studioExists)
+                    {
+                        studioID = studios.Where(s => s.StudioName == dVDTitleCreateVM.StudioName).FirstOrDefault().StudioId;
+                    }
+                    else
+                    {
+                        Studio st = new Studio();
+                        st.StudioName = dVDTitleCreateVM.StudioName;
+                        _context.Add(st);
+                    await _context.SaveChangesAsync();
+                        studioID = _context.Studios.ToList().Where(s => s.StudioName == st.StudioName).FirstOrDefault().StudioId;
+                    }
+                    if (producerExists)
+                    {
+                        producerID = producers.Where(p => p.ProducerName == dVDTitleCreateVM.ProducerName).FirstOrDefault().ProducerNumber;
+                    }
+                    else
+                    {
+                        Producer pr = new Producer();
+                        pr.ProducerName = dVDTitleCreateVM.ProducerName;
+                        _context.Add(pr);
+                    await _context.SaveChangesAsync();
+                        producerID = _context.Producers.ToList().Where(p => p.ProducerName == pr.ProducerName).FirstOrDefault().ProducerNumber;
+                    }
+                    DVDTitle dvdt = new DVDTitle();
+                    dvdt.Title = dVDTitleCreateVM.Title;
+                    dvdt.DateRelease = dVDTitleCreateVM.DateReleased;
+                    dvdt.StudioId = studioID;
+                    dvdt.ProducerNumber = producerID;
+                    dvdt.StandardCharge = dVDTitleCreateVM.StandardCharge;
+                    dvdt.PenaltyCharge = dVDTitleCreateVM.PenaltyCharge;
+                    dvdt.CategoryNumber = dVDTitleCreateVM.CategoryNumber;
+                    _context.Add(dvdt);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -286,14 +324,14 @@ namespace DVDRental.Controllers
                     ModelState.AddModelError("Error", "Sorry! This DVD title already exists.");
                 }
             }
-            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
-            ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription", dVDTitle.CategoryNumber);
-            ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName", dVDTitle.ProducerNumber);
-            ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName", dVDTitle.StudioId);
+            //ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
+            //ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription", dVDTitle.CategoryNumber);
+            //ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName", dVDTitle.ProducerNumber);
+            //ViewData["StudioId"] = new SelectList(_context.Studios, "StudioId", "StudioName", dVDTitle.StudioId);
 
             
 
-            return View(dVDTitle);
+            return View(dVDTitleCreateVM);
         }
 
 
@@ -393,6 +431,55 @@ namespace DVDRental.Controllers
         private bool DVDTitleExists(int id)
         {
             return _context.DVDTitles.Any(e => e.DVDNumber == id);
+        }
+
+        //adding cast members
+        //GET
+        [Authorize]
+        public async Task<IActionResult> AddCast(int? id)
+        {
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
+
+            return View();
+        }
+
+        //POST 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        [Authorize]
+        public async Task<IActionResult> AddCast(int id, List<int> CastMembers)
+        {
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
+            var dvdID = id;
+            var castList = CastMembers;
+
+            foreach (int actorID in castList )
+            {
+                var castMembers = _context.CastMembers.ToList();
+                var dvdTitles = _context.DVDTitles.ToList();
+                var lastNo = castMembers.OrderBy(cm => cm.Id).LastOrDefault().Id;
+
+                var actorExists = (from dt in dvdTitles.Where(dt=>dt.DVDNumber==dvdID)
+                                  join cm in castMembers
+                                  on dt.DVDNumber equals cm.DVDNumber
+                                  select cm).Where(x=>x.ActorId==actorID).FirstOrDefault() !=null;
+
+                if (!actorExists)
+                {
+                CastMember cmem = new CastMember();
+                cmem.DVDNumber = dvdID;
+                cmem.ActorId = actorID;
+                cmem.Id = lastNo+1;
+                _context.Add(cmem);
+                    await _context.SaveChangesAsync();
+
+                }
+
+                
+            }
+
+            return View();
         }
     }
 }
