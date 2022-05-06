@@ -1,4 +1,5 @@
-﻿@model DVDRental.Models.DVDTitle
+﻿@model DVDRental.Models.DVDTitle;
+
 
 @{
     ViewData["Title"] = "Details";
@@ -98,7 +99,7 @@
                                 @foreach (var actor in Model.CastMembers)
                                 {
                                     <div class="column text-center">
-                                        <a asp-controller="Actors" asp-action="Details" asp-route-id="@actor.ActorId">@actor.Actor.ActorFirstName</a>
+                                        <a asp-controller="Actors" asp-action="Details" asp-route-id="@actor.ActorId">@actor.Actor.ActorId</a>
                                     </div>
                                 }
                             </div>

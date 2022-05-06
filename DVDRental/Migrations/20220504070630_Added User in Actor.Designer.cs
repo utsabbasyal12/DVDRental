@@ -4,6 +4,7 @@ using DVDRental.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DVDRental.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220504070630_Added User in Actor")]
+    partial class AddedUserinActor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,28 +24,7 @@ namespace DVDRental.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("DVDRental.Models.Actor", b =>
-                {
-                    b.Property<int>("ActorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActorId"), 1L, 1);
-
-                    b.Property<string>("ActorFirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ActorSurname")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ActorId");
-
-                    b.ToTable("Actors");
-                });
-
-            modelBuilder.Entity("DVDRental.Models.ApplicationUser", b =>
+            modelBuilder.Entity("DVDRental.Areas.Identity.Data.DVDRentalUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -110,6 +91,32 @@ namespace DVDRental.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Actor", b =>
+                {
+                    b.Property<int>("ActorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActorId"), 1L, 1);
+
+                    b.Property<string>("ActorFirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ActorSurname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ActorId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Actors");
                 });
 
             modelBuilder.Entity("DVDRental.Models.CastMember", b =>
@@ -486,6 +493,15 @@ namespace DVDRental.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DVDRental.Models.Actor", b =>
+                {
+                    b.HasOne("DVDRental.Areas.Identity.Data.DVDRentalUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DVDRental.Models.CastMember", b =>
                 {
                     b.HasOne("DVDRental.Models.Actor", "Actor")
@@ -592,7 +608,7 @@ namespace DVDRental.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("DVDRental.Models.ApplicationUser", null)
+                    b.HasOne("DVDRental.Areas.Identity.Data.DVDRentalUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -601,7 +617,7 @@ namespace DVDRental.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("DVDRental.Models.ApplicationUser", null)
+                    b.HasOne("DVDRental.Areas.Identity.Data.DVDRentalUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -616,7 +632,7 @@ namespace DVDRental.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DVDRental.Models.ApplicationUser", null)
+                    b.HasOne("DVDRental.Areas.Identity.Data.DVDRentalUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -625,7 +641,7 @@ namespace DVDRental.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("DVDRental.Models.ApplicationUser", null)
+                    b.HasOne("DVDRental.Areas.Identity.Data.DVDRentalUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

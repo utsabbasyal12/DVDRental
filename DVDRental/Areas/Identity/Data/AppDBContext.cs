@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DVDRental.Areas.Identity.Data;
 
-public class AppDBContext : IdentityDbContext<DVDRentalUser>
+public class AppDBContext : IdentityDbContext<ApplicationUser>
 {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public AppDBContext(DbContextOptions<AppDBContext> options)
@@ -37,23 +37,24 @@ public class AppDBContext : IdentityDbContext<DVDRentalUser>
         });
         builder.Entity<CastMember>()
             .HasOne(a => a.Actor)
-            .WithMany(ab => ab.CastMembers)
+            .WithMany(am => am.CastMembers)
             .HasForeignKey(a => a.ActorId);
 
         builder.Entity<CastMember>()
             .HasOne(a => a.DVDTitle)
-            .WithMany(ab => ab.CastMembers)
+            .WithMany(am => am.CastMembers)
             .HasForeignKey(a => a.DVDNumber);
 
         builder.ApplyConfiguration(new ApplicationUserEntityCongiguration());
+
     }
 
     
 }
 
-public class ApplicationUserEntityCongiguration : IEntityTypeConfiguration<DVDRentalUser>
+public class ApplicationUserEntityCongiguration : IEntityTypeConfiguration<ApplicationUser>
 {
-    public void Configure(EntityTypeBuilder<DVDRentalUser> builder)
+    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         //builder.Property(u => u.ShopNumber).HasMaxLength(10);
         builder.Property(u => u.ShopName).HasMaxLength(255);

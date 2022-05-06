@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace DVDRental.Controllers
 {
@@ -59,6 +61,7 @@ namespace DVDRental.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(actor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

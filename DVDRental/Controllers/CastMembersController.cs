@@ -11,23 +11,23 @@ using DVDRental.Models;
 
 namespace DVDRental.Controllers
 {
-    public class MembersController : Controller
+    public class CastMembersController : Controller
     {
         private readonly AppDBContext _context;
 
-        public MembersController(AppDBContext context)
+        public CastMembersController(AppDBContext context)
         {
             _context = context;
         }
 
-        // GET: Members
+        // GET: CastMembers
         public async Task<IActionResult> Index()
         {
-            var appDBContext = _context.Members.Include(m => m.MembershipCategory);
+            var appDBContext = _context.CastMembers.Include(c => c.Actor).Include(c => c.DVDTitle);
             return View(await appDBContext.ToListAsync());
         }
 
-        // GET: Members/Details/5
+        // GET: CastMembers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,42 +35,45 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members
-                .Include(m => m.MembershipCategory)
-                .FirstOrDefaultAsync(m => m.MemberNumber == id);
-            if (member == null)
+            var castMember = await _context.CastMembers
+                .Include(c => c.Actor)
+                .Include(c => c.DVDTitle)
+                .FirstOrDefaultAsync(m => m.ActorId == id);
+            if (castMember == null)
             {
                 return NotFound();
             }
 
-            return View(member);
+            return View(castMember);
         }
 
-        // GET: Members/Create
+        // GET: CastMembers/Create
         public IActionResult Create()
         {
-            ViewData["MembershipCategoryNumber"] = new SelectList(_context.MembershipCategories, "MembershipCategoryNumber", "MembershipCategoryDescription");
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorFirstName");
+            ViewData["DVDNumber"] = new SelectList(_context.DVDTitles, "DVDNumber", "Title");
             return View();
         }
 
-        // POST: Members/Create
+        // POST: CastMembers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MemberNumber,MemberLastName,MemberFirstName,MemberAddress,MemberDOB,MembershipCategoryDescription")] Member member)
+        public async Task<IActionResult> Create([Bind("ActorId,DVDNumber")] CastMember castMember)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(member);
+                _context.Add(castMember);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MembershipCategoryNumber"] = new SelectList(_context.MembershipCategories, "MembershipCategoryNumber", "MembershipCategoryDescription", member.MembershipCategoryNumber);
-            return View(member);
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorFirstName", castMember.ActorId);
+            ViewData["DVDNumber"] = new SelectList(_context.DVDTitles, "DVDNumber", "Title", castMember.DVDNumber);
+            return View(castMember);
         }
 
-        // GET: Members/Edit/5
+        // GET: CastMembers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,23 +81,24 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members.FindAsync(id);
-            if (member == null)
+            var castMember = await _context.CastMembers.FindAsync(id);
+            if (castMember == null)
             {
                 return NotFound();
             }
-            ViewData["MembershipCategoryNumber"] = new SelectList(_context.MembershipCategories, "MembershipCategoryNumber", "MembershipCategoryNumber", member.MembershipCategoryNumber);
-            return View(member);
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorFirstName", castMember.ActorId);
+            ViewData["DVDNumber"] = new SelectList(_context.DVDTitles, "DVDNumber", "Title", castMember.DVDNumber);
+            return View(castMember);
         }
 
-        // POST: Members/Edit/5
+        // POST: CastMembers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MemberNumber,MemberLastName,MemberFirstName,MemberAddress,MemberDOB,MembershipCategoryNumber")] Member member)
+        public async Task<IActionResult> Edit(int id, [Bind("ActorId,DVDNumber")] CastMember castMember)
         {
-            if (id != member.MemberNumber)
+            if (id != castMember.ActorId)
             {
                 return NotFound();
             }
@@ -103,12 +107,12 @@ namespace DVDRental.Controllers
             {
                 try
                 {
-                    _context.Update(member);
+                    _context.Update(castMember);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MemberExists(member.MemberNumber))
+                    if (!CastMemberExists(castMember.ActorId))
                     {
                         return NotFound();
                     }
@@ -119,11 +123,12 @@ namespace DVDRental.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MembershipCategoryNumber"] = new SelectList(_context.MembershipCategories, "MembershipCategoryNumber", "MembershipCategoryNumber", member.MembershipCategoryNumber);
-            return View(member);
+            ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorFirstName", castMember.ActorId);
+            ViewData["DVDNumber"] = new SelectList(_context.DVDTitles, "DVDNumber", "Title", castMember.DVDNumber);
+            return View(castMember);
         }
 
-        // GET: Members/Delete/5
+        // GET: CastMembers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,31 +136,32 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members
-                .Include(m => m.MembershipCategory)
-                .FirstOrDefaultAsync(m => m.MemberNumber == id);
-            if (member == null)
+            var castMember = await _context.CastMembers
+                .Include(c => c.Actor)
+                .Include(c => c.DVDTitle)
+                .FirstOrDefaultAsync(m => m.ActorId == id);
+            if (castMember == null)
             {
                 return NotFound();
             }
 
-            return View(member);
+            return View(castMember);
         }
 
-        // POST: Members/Delete/5
+        // POST: CastMembers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var member = await _context.Members.FindAsync(id);
-            _context.Members.Remove(member);
+            var castMember = await _context.CastMembers.FindAsync(id);
+            _context.CastMembers.Remove(castMember);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MemberExists(int id)
+        private bool CastMemberExists(int id)
         {
-            return _context.Members.Any(e => e.MemberNumber == id);
+            return _context.CastMembers.Any(e => e.ActorId == id);
         }
     }
 }

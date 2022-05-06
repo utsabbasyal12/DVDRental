@@ -1,4 +1,5 @@
 ﻿
+using DVDRental.Areas.Identity.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace DVDRental.Models
@@ -7,6 +8,7 @@ namespace DVDRental.Models
     {
         [Key]
         public int ActorId { get; set; }
+
         [Display(Name = "Last Name")]
         [Required(ErrorMessage = "Last Name is required")]
         public string? ActorSurname { get; set; }

@@ -14,6 +14,10 @@ namespace DVDRental.Models.ViewModels
         [Required(ErrorMessage = "Release date is required")]
         public DateTime DateRelease { get; set; }
 
+        public decimal StandardCharge { get; set; }
+
+        public decimal PenaltyCharge { get; set; }
+
         [Display(Name = "Select a category")]
         [Required(ErrorMessage = "DVD category is required")]
         public DVDCategory? DVDCategory{ get; set; }

@@ -1,11 +1,10 @@
-﻿using DVDRental.Areas.Identity.Data;
-using PagedList;
+﻿using PagedList;
 
 namespace DVDRental.Models.ViewModels
 {
     public class UserViewModel
     {
-        public DVDRentalUser? User { get; set; }
+        public ApplicationUser? User { get; set; }
         public IPagedList<Actor>? Actors { get; set; }
         public int SearchString { get; set; }
 

@@ -52,13 +52,11 @@ namespace DVDRental.Controllers
         // GET: DVDTitles/Create
         public IActionResult Create()
         {
-            //var dvdDropdownData = await _context.GetNewDVDDropdownsValues();
+        /*    ViewBag.actorList = _context.Actors.ToArray();
+            ViewBag.categoryList = _context.DVDCategory.ToArray();
+            ViewBag.studioList = _context.Studios.ToArray();
+            ViewBag.producerList = _context.Producers.ToArray();*/
 
-            //ViewBag.Studios = new SelectList(dvdDropdownData.Studios, "StudioId", "StudioName");
-            //ViewBag.Producers= new SelectList(dvdDropdownData.Producers, "ProducerNumber", "ProducerName");
-            //ViewBag.Actors = new SelectList(dvdDropdownData.Actors, "ActorId", "FirstName");
-
-            //return View();
             ViewData["ActorId"] = new SelectList(_context.Actors, "ActorId", "ActorSurname");
             ViewData["CategoryNumber"] = new SelectList(_context.DVDCategory, "CategoryNumber", "CategoryDescription");
             ViewData["ProducerNumber"] = new SelectList(_context.Producers, "ProducerNumber", "ProducerName");
