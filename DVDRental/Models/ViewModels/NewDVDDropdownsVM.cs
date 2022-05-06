@@ -12,4 +12,8 @@
         public List<Studio> Studios{ get; set; }
         public List<Actor> Actors { get; set; }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master

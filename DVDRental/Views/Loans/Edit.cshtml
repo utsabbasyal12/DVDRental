@@ -1,0 +1,68 @@
+﻿@model DVDRental.Models.Loan
+
+@{
+    ViewData["Title"] = "Return";
+}
+
+<h1>Return a DVD</h1>
+<hr />
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+{
+    <div class="alert alert-
+       <strong>Error!</strong> danger">@ViewData.ModelState["Error"].Errors.First().ErrorMessage
+    </div>
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="LoanNumber" />
+            <div class="form-group">
+                <label asp-for="DateOut" class="control-label"></label>
+                <input asp-for="DateOut" class="form-control" disabled />
+                <span asp-validation-for="DateOut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDue" class="control-label"></label>
+                <input asp-for="DateDue" class="form-control" disabled />
+                <span asp-validation-for="DateDue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LoanTypeNumber" class="control-label"></label>
+                <select asp-for="LoanTypeNumber" class="form-control" asp-items="ViewBag.LoanTypeNumber" disabled></select>
+                <span asp-validation-for="LoanTypeNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CopyNumber" class="control-label"></label>
+                <select asp-for="CopyNumber" class="form-control" asp-items="ViewBag.CopyNumber" disabled></select>
+                <span asp-validation-for="CopyNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MemberNumber" class="control-label"></label>
+                <select asp-for="MemberNumber" class="form-control" asp-items="ViewBag.MemberNumber" disabled ></select>
+                <span asp-validation-for="MemberNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Return DVD" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script type="text/javascript">
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+        {
+            <text>
+            $(document).ready(function() {
+                alert('@ViewData.ModelState["Error"].Errors.First().ErrorMessage');
+            });
+            </text>
+        }
+    </script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

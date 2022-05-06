@@ -1,4 +1,4 @@
-﻿@model DVDRental.Models.DVDTitle
+﻿@model DVDRental.Models.ViewModels.DVDTitleCreateVM;
 
 @{
     ViewData["Title"] = "Create";
@@ -8,6 +8,12 @@
 
 <h4>DVDTitle</h4>
 <hr />
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+{
+    <div class="alert alert-
+       <strong>Error!</strong> danger">@ViewData.ModelState["Error"].Errors.First().ErrorMessage
+    </div>
+}
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -18,9 +24,9 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateRelease" class="control-label"></label>
-                <input asp-for="DateRelease" class="form-control" />
-                <span asp-validation-for="DateRelease" class="text-danger"></span>
+                <label asp-for="DateReleased" class="control-label"></label>
+                <input asp-for="DateReleased" class="form-control" />
+                <span asp-validation-for="DateReleased" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="StandardCharge" class="control-label"></label>
@@ -33,12 +39,21 @@
                 <span asp-validation-for="PenaltyCharge" class="text-danger"></span>
             </div>
             <div class="form-group">
+<<<<<<< HEAD
+                <label asp-for="StudioName" class="control-label"></label>
+                  <input asp-for="StudioName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ProducerName" class="control-label"></label>
+                <input asp-for="ProducerName" class="form-control" />
+=======
                 <label asp-for="StudioId" class="control-label"></label>
                 <select asp-for="StudioId" class ="form-control" asp-items="ViewBag.StudioId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="ProducerNumber" class="control-label"></label>
                 <select asp-for="ProducerNumber" class ="form-control" asp-items="ViewBag.ProducerNumber"></select>
+>>>>>>> master
             </div>
             <div class="form-group">
                 <label asp-for="CategoryNumber" class="control-label"></label>
@@ -54,6 +69,16 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script type="text/javascript">
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+        {
+            <text>
+            $(document).ready(function() {
+                alert('@ViewData.ModelState["Error"].Errors.First().ErrorMessage');
+            });
+            </text>
+        }
+    </script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

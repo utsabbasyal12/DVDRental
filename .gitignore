@@ -363,5 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # app settings
-*.appsettings.json
-*.appsettings.Development.json
+DVDRental/.appsettings.json
+DVDRental/.appsettings.Development.json
+DVDRental/*.json

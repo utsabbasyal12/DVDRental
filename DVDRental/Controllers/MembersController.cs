@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
+<<<<<<< HEAD
+using DVDRental.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+=======
+>>>>>>> master
 
 namespace DVDRental.Controllers
 {
@@ -21,13 +26,183 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> master
         public async Task<IActionResult> Index()
         {
             var appDBContext = _context.Members.Include(m => m.MembershipCategory);
             return View(await appDBContext.ToListAsync());
         }
 
+<<<<<<< HEAD
+        [Authorize]
+        public async Task<IActionResult> SearchMemberLoan(string searchString)
+        {
+            //var user = UserManager.FindById(User.Identity.GetUserId());
+            var dvdCopyList = _context.DVDCopies.ToList();
+            //var userDetails = "HIVE MAGICK FUCKERY";
+            //var userShopID = userDetails.ShopID;
+            var dvdTitle = _context.DVDTitles.ToList();
+            var castMember = _context.CastMembers.ToList();
+            var actor = _context.Actors.ToList();
+            var members = _context.Members.ToList();
+            var loan = _context.Loans.ToList();
+
+            var memberLoans = from m in members
+                              join l in loan
+                              on m.MemberNumber equals l.MemberNumber
+                              join dc in dvdCopyList
+                              on l.CopyNumber equals dc.CopyNumber
+                              join dt in dvdTitle
+                              on dc.DVDNumber equals dt.DVDNumber
+                              join produc in _context.Producers.ToList()
+                              on dt.ProducerNumber equals produc.ProducerNumber
+                              join stud in _context.Studios.ToList()
+                              on dt.StudioId equals stud.StudioId
+                              join dvdCat in _context.DVDCategory.ToList()
+                              on dt.CategoryNumber equals dvdCat.CategoryNumber
+
+                              select new SearchMemberLoanVM
+                              {
+                                  DVDTitle = dt.Title,
+                                  CopyNumber = dc.CopyNumber,
+                                  MemberFirstName = m.MemberFirstName,
+                                  MemberLastName = m.MemberLastName,
+                              };
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var memberLastName = searchString;
+                var currentDate = DateTime.Now;
+
+               memberLoans = from m in members.Where(m => m.MemberLastName == memberLastName)
+                              join l in loan
+                              .Where(l => l.DateOut.Subtract(currentDate).TotalDays <= 31)
+                              on m.MemberNumber equals l.MemberNumber
+                              join dc in dvdCopyList
+                              on l.CopyNumber equals dc.CopyNumber
+                              join dt in dvdTitle
+                              on dc.DVDNumber equals dt.DVDNumber
+                              join produc in _context.Producers.ToList()
+                              on dt.ProducerNumber equals produc.ProducerNumber
+                              join stud in _context.Studios.ToList()
+                              on dt.StudioId equals stud.StudioId
+                              join dvdCat in _context.DVDCategory.ToList()
+                              on dt.CategoryNumber equals dvdCat.CategoryNumber
+
+                              select new SearchMemberLoanVM
+                              {
+                                  DVDTitle = dt.Title,
+                                  CopyNumber = dc.CopyNumber,
+                                  MemberFirstName = m.MemberFirstName,
+                                  MemberLastName = m.MemberLastName,
+                              };
+
+
+                //members.Join(loan,
+                //        member => member.MemberNumber,
+                //        loan => loan.MemberNumber,
+                //        (member, loan) => loan
+                //        ).Where(x => x.dateReturned != null)
+                //        .Where(DateTime.Now() - x.dateReturned <= 31)
+                //        .Where(x => x.memberNumber == selectedMember);
+
+            }
+
+
+            //    //linq1 end
+
+            return View(memberLoans);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> memberLoanStatus(string searchString)
+        {
+            //var user = UserManager.FindById(User.Identity.GetUserId());
+            var dvdCopyList = _context.DVDCopies.ToList();
+            //var userDetails = "HIVE MAGICK FUCKERY";
+            //var userShopID = userDetails.ShopID;
+            var dvdTitle = _context.DVDTitles.ToList();
+            var castMember = _context.CastMembers.ToList();
+            var actor = _context.Actors.ToList();
+            var members = _context.Members.ToList();
+            var loan = _context.Loans.ToList();
+
+
+
+            var memberLoanStatus = (from m in members
+                              join l in loan.Where(l=>l.DateRetured==null)
+                              on m.MemberNumber equals l.MemberNumber
+                              join mCat in _context.MembershipCategories.ToList()
+                              on m.MembershipCategoryNumber equals mCat.MembershipCategoryNumber
+                                select new MemberLoanStatusVM
+                                {
+                                  MemberNumber = m.MemberNumber,
+                                  MemberFirstName = m.MemberFirstName,
+                                  MemberLastName = m.MemberLastName,
+                                  MemberAddress = m.MemberAddress,
+                                  MemberDOB = m.MemberDOB,
+                                  MembershipCategory = mCat.MembershipCategoryDescription.ToString(),
+                                  CategoryTotalLoans = mCat.MembershipCategoryTotalLoans
+
+                              }).GroupBy(x => x.MemberNumber).Select(g => new MemberLoanStatusVM
+                              {
+                                  MemberNumber = g.Key,
+                                  MemberFirstName = g.FirstOrDefault().MemberFirstName,
+                                  MemberLastName = g.FirstOrDefault().MemberLastName,
+                                  MemberAddress = g.FirstOrDefault().MemberAddress,
+                                  MemberDOB = g.FirstOrDefault().MemberDOB,
+                                  MembershipCategory = g.FirstOrDefault().MembershipCategory,
+                                  CategoryTotalLoans = g.FirstOrDefault().CategoryTotalLoans,
+                                  MemberLoanCount = g.Count(),
+                                  Remark = (g.FirstOrDefault().CategoryTotalLoans < g.Count()) ? "Too Many DVDs" : "Valid No. of DVDs"
+                              });
+            return View(memberLoanStatus);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> UnloanedMembers()
+        {
+            var members = _context.Members.ToList();
+            var loans = _context.Loans.ToList();
+            var dvdTitles = _context.DVDTitles.ToList();
+            var dVDCopies = _context.DVDCopies.ToList();
+            var currentDate = DateTime.Now;
+
+            var loanedMembers = (from m in members
+                                join l in loans.Where(l => currentDate.Subtract(l.DateOut).TotalDays <= 31)
+                                on m.MemberNumber equals l.MemberNumber
+                                select m).Distinct().ToList();
+
+            var unloanedMembers = members.Except(loanedMembers).ToList();                     
+                                  
+            var memberLoanDetails = (from m in unloanedMembers
+                                    join l in loans
+                                    on m.MemberNumber equals l.MemberNumber
+                                  join dc in dVDCopies
+                                  on l.CopyNumber equals dc.CopyNumber
+                                  join dt in dvdTitles
+                                  on dc.DVDNumber equals dt.DVDNumber
+                                  select new UnloanedMembersVM
+                                  {
+                                      DateOut = l.DateOut,
+                                      DVDTitle = dt.Title,
+                                      LoanedDays = Convert.ToInt32(currentDate.Subtract(l.DateOut).TotalDays),
+                                      Address = m.MemberAddress,
+                                      MemberFirstName = m.MemberFirstName,
+                                      MemberLastName = m.MemberLastName,
+                                  }).ToList();
+
+            return View(memberLoanDetails);
+        }
+
         // GET: Members/Details/5
+        [Authorize]
+=======
+        // GET: Members/Details/5
+>>>>>>> master
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,6 +222,10 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members/Create
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> master
         public IActionResult Create()
         {
             ViewData["MembershipCategoryNumber"] = new SelectList(_context.MembershipCategories, "MembershipCategoryNumber", "MembershipCategoryNumber");
@@ -58,6 +237,10 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> master
         public async Task<IActionResult> Create([Bind("MemberNumber,MemberLastName,MemberFirstName,MemberAddress,MemberDOB,MembershipCategoryNumber")] Member member)
         {
             if (ModelState.IsValid)
@@ -71,6 +254,10 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members/Edit/5
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> master
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -92,6 +279,10 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> master
         public async Task<IActionResult> Edit(int id, [Bind("MemberNumber,MemberLastName,MemberFirstName,MemberAddress,MemberDOB,MembershipCategoryNumber")] Member member)
         {
             if (id != member.MemberNumber)
@@ -124,6 +315,10 @@ namespace DVDRental.Controllers
         }
 
         // GET: Members/Delete/5
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> master
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -145,6 +340,10 @@ namespace DVDRental.Controllers
         // POST: Members/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> master
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await _context.Members.FindAsync(id);
@@ -153,6 +352,10 @@ namespace DVDRental.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+<<<<<<< HEAD
+        [Authorize]
+=======
+>>>>>>> master
         private bool MemberExists(int id)
         {
             return _context.Members.Any(e => e.MemberNumber == id);

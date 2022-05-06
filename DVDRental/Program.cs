@@ -41,6 +41,13 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+<<<<<<< HEAD
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=DVDTitles}/{action=Index}/{id?}");
+
+=======
+>>>>>>> master
 app.MapRazorPages();
 
 app.Run();

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<DVDRental.Models.ViewModels.SearchMemberLoanVM>
+
+@{
+    ViewData["Title"] = "Search  Member Loan";
+}
+
+<h1>Search</h1>
+
+<form asp-controller="Members" asp-action="SearchMemberLoan">
+    <p>
+        Member Surname: <input type="text" name="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DVDTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CopyNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberFirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberLastName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DVDTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CopyNumber)
+            </td>            
+            <td>
+                @Html.DisplayFor(modelItem => item.MemberFirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MemberLastName)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

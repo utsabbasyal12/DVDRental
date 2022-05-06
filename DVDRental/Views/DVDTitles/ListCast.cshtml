@@ -1,0 +1,63 @@
+﻿@model IEnumerable<DVDRental.Models.ViewModels.DVDTitleListCastVM>
+
+@{
+    ViewData["Title"] = "Titles and CastMembers";
+}
+
+<h1>Index</h1>
+
+<form asp-controller="DVDTitles" asp-action="ListCast">
+@*    <p>
+        Actor Surname: <input type="text" name="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>*@
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DVDTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateReleased)
+            </th> 
+            <th>
+                @Html.DisplayNameFor(model => model.Studio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Producer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActorFirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActorLastName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DVDTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateReleased)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Studio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Producer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActorFirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActorLastName)
+            </td>
+            </tr>
+}
+    </tbody>
+</table>

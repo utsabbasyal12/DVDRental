@@ -4,6 +4,7 @@ using DVDRental.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DVDRental.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220503070649_DVDTitle model issue fixed")]
+    partial class DVDTitlemodelissuefixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,7 +230,7 @@ namespace DVDRental.Migrations
                     b.Property<DateTime>("DateOut")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateRetured")
+                    b.Property<DateTime>("DateRetured")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("LoanTypeNumber")
