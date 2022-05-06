@@ -8,7 +8,11 @@ namespace DVDRental.Models
     {
         [Key]
         public int LoanTypeNumber { get; set; }
+<<<<<<< HEAD
         public LoanCategory LoanCategory { get; set; }
+=======
+        public LoanCateogory LoanCategory { get; set; }
+>>>>>>> master
         public int LoanDuration { get; set; }
 
         //Relationships

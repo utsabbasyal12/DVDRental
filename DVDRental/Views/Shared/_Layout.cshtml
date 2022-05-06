@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 ﻿@using DVDRental.Areas.Identity.Data
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<DVDRentalUser> SignInManager
 <!DOCTYPE html>
+=======
+﻿<!DOCTYPE html>
+>>>>>>> master
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -27,6 +31,7 @@
                         </li>
                         @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+<<<<<<< HEAD
                         </li>*@
                          @if (SignInManager.IsSignedIn(User))
                         {
@@ -70,6 +75,9 @@
 
                             </li>
                         }
+=======
+                        </li>
+>>>>>>> master
                     </ul>
                 </div>
                 <partial name="_LoginPartial"/>

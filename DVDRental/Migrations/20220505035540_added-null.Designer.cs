@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DVDRental.Migrations
 {
     [DbContext(typeof(AppDBContext))]
+<<<<<<<< HEAD:DVDRental/Migrations/20220505035540_added-null.Designer.cs
     [Migration("20220505035540_added-null")]
     partial class addednull
+========
+    [Migration("20220503060438_Checking Views")]
+    partial class CheckingViews
+>>>>>>>> master:DVDRental/Migrations/20220503060438_Checking Views.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -230,7 +235,11 @@ namespace DVDRental.Migrations
                     b.Property<DateTime>("DateOut")
                         .HasColumnType("datetime2");
 
+<<<<<<<< HEAD:DVDRental/Migrations/20220505035540_added-null.Designer.cs
                     b.Property<DateTime?>("DateRetured")
+========
+                    b.Property<DateTime>("DateRetured")
+>>>>>>>> master:DVDRental/Migrations/20220503060438_Checking Views.Designer.cs
                         .HasColumnType("datetime2");
 
                     b.Property<int>("LoanTypeNumber")

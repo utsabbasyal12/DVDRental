@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ﻿@using DVDRental.Enums
 @model DVDRental.Models.LoanType
+=======
+﻿@model DVDRental.Models.LoanType
+>>>>>>> master
 
 @{
     ViewData["Title"] = "Create";
@@ -15,7 +19,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="LoanCategory" class="control-label"></label>
+<<<<<<< HEAD
                 <select asp-for="LoanCategory" class="form-control" asp-items="Html.GetEnumSelectList<LoanCategory>()"></select>
+=======
+                <select asp-for="LoanCategory" class="form-control"></select>
+>>>>>>> master
                 <span asp-validation-for="LoanCategory" class="text-danger"></span>
             </div>
             <div class="form-group">
