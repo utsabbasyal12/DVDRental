@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
 using DVDRental.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DVDRental.Controllers
 {
@@ -22,6 +23,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDCopies
+        [Authorize]
         public async Task<IActionResult> Index(int searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -88,6 +90,7 @@ namespace DVDRental.Controllers
             
         }
 
+        [Authorize]
         public async Task<IActionResult> LoanedCopies()
         {
             var dvdCopies = _context.DVDCopies.ToList();
@@ -115,6 +118,7 @@ namespace DVDRental.Controllers
             return View(LoanedCopyDetails);
         }
 
+        [Authorize]
         public async Task<IActionResult> UnloanedCopies()
         {
             var dvdCopies = _context.DVDCopies.ToList();
@@ -141,6 +145,7 @@ namespace DVDRental.Controllers
 
 
         // GET: DVDCopies/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -160,6 +165,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDCopies/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["DVDNumber"] = new SelectList(_context.DVDTitles, "DVDNumber", "Title");
@@ -184,6 +190,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDCopies/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -205,6 +212,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("CopyNumber,DatePurchased,DVDNumber")] DVDCopy dVDCopy)
         {
             if (id != dVDCopy.CopyNumber)
@@ -237,6 +245,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDCopies/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -258,6 +267,7 @@ namespace DVDRental.Controllers
         // POST: DVDCopies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var dVDCopy = await _context.DVDCopies.FindAsync(id);
@@ -266,6 +276,7 @@ namespace DVDRental.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize]
         private bool DVDCopyExists(int id)
         {
             return _context.DVDCopies.Any(e => e.CopyNumber == id);

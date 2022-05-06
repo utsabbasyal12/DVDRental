@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DVDRental.Controllers
 {
@@ -21,12 +22,14 @@ namespace DVDRental.Controllers
         }
 
         // GET: Actors
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Actors.ToListAsync());
         }
 
         // GET: Actors/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,6 +48,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Actors/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -55,6 +59,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("ActorId,ActorSurname,ActorFirstName")] Actor actor)
         {
             if (ModelState.IsValid)
@@ -67,6 +72,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Actors/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,6 +93,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("ActorId,ActorSurname,ActorFirstName")] Actor actor)
         {
             if (id != actor.ActorId)
@@ -118,6 +125,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Actors/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -138,6 +146,7 @@ namespace DVDRental.Controllers
         // POST: Actors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var actor = await _context.Actors.FindAsync(id);

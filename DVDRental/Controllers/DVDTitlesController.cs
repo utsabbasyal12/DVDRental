@@ -10,6 +10,7 @@ using DVDRental.Areas.Identity.Data;
 using DVDRental.Models;
 using DVDRental.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DVDRental.Controllers
 {
@@ -23,6 +24,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDTitles
+        [Authorize]
         public async Task<IActionResult> Index(string searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -102,6 +104,7 @@ namespace DVDRental.Controllers
         }
 
         //Feature 2
+        [Authorize]
         public async Task<IActionResult> SearchDVDCopies(string searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -166,6 +169,7 @@ namespace DVDRental.Controllers
             return View(dvdCopiesWithSelectedActor);
         }
 
+        [Authorize]
         public async Task<IActionResult> ListCast() {
             var dvdCopyList = _context.DVDCopies.ToList();
             //var userDetails = "HIVE MAGICK FUCKERY";
@@ -197,7 +201,7 @@ namespace DVDRental.Controllers
 
             return View(titlesAndCast);
                 }
-
+        [Authorize]
         public async Task<IActionResult> OldCopies()
         {
             var dvdCopies = _context.DVDCopies.ToList();
@@ -218,34 +222,8 @@ namespace DVDRental.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // GET: DVDTitles/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -267,6 +245,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDTitles/Create
+        [Authorize]
         public IActionResult Create()
         {
             //var dvdDropdownData = await _context.GetNewDVDDropdownsValues();
@@ -289,6 +268,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("DVDNumber,Title,DateRelease,StandardCharge,PenaltyCharge,StudioId,ProducerNumber,CategoryNumber")] DVDTitle dVDTitle)
         {
             if (ModelState.IsValid)
@@ -307,9 +287,10 @@ namespace DVDRental.Controllers
             return View(dVDTitle);
         }
 
-        
+
 
         // GET: DVDTitles/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -333,6 +314,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("DVDNumber,Title,DateRelease,StandardCharge,PenaltyCharge,StudioId,ProducerNumber,CategoryNumber")] DVDTitle dVDTitle)
         {
             if (id != dVDTitle.DVDNumber)
@@ -367,6 +349,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDTitles/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
