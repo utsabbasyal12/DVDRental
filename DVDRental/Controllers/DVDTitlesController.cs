@@ -459,7 +459,10 @@ namespace DVDRental.Controllers
             {
                 var castMembers = _context.CastMembers.ToList();
                 var dvdTitles = _context.DVDTitles.ToList();
-                var lastNo = castMembers.OrderBy(cm => cm.Id).LastOrDefault().Id;
+                var lastNo = castMembers?.OrderBy(cm => cm.Id).LastOrDefault().Id;
+                int ln = 0;
+                ln = lastNo?? 0;
+                
 
                 var actorExists = (from dt in dvdTitles.Where(dt => dt.DVDNumber == dvdID)
                                    join cm in castMembers
@@ -471,7 +474,7 @@ namespace DVDRental.Controllers
                     CastMember cmem = new CastMember();
                     cmem.DVDNumber = dvdID;
                     cmem.ActorId = actorID;
-                    cmem.Id = lastNo + 1;
+                    cmem.Id = ln + 1;
                     _context.Add(cmem);
                     await _context.SaveChangesAsync();
 
@@ -480,7 +483,7 @@ namespace DVDRental.Controllers
 
             }
 
-            return View();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -15,6 +15,7 @@
         <input type="submit" value="Filter" />
     </p>
 </form>
+
 @*
 <table class="table">
     <thead>
@@ -122,6 +123,8 @@
                                   <a class="btn btn-outline-danger float-right" asp-action="Delete" asp-route-id="@item.DVDNumber">
                                       <i class="bi bi-trash"></i>Delete
                                       </a>
+        <a asp-action="AddCast" asp-route-id="@item.DVDNumber">Add Cast </a>
+
                                     }
                                @* <a class="btn btn-success text-white @((DateTime.Now > item.EndDate) ? "disabled" : "")" 
                                    asp-controller="Orders" 
