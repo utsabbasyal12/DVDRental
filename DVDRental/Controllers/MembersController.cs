@@ -151,7 +151,7 @@ namespace DVDRental.Controllers
                                   MembershipCategory = g.FirstOrDefault().MembershipCategory,
                                   CategoryTotalLoans = g.FirstOrDefault().CategoryTotalLoans,
                                   MemberLoanCount = g.Count(l => l.DateReturned == null),
-                                  Remark = (g.FirstOrDefault().CategoryTotalLoans < g.Count()) ? "Too Many DVDs" : "Valid No. of DVDs"
+                                  Remark = (g.FirstOrDefault().CategoryTotalLoans < g.Count(l => l.DateReturned == null)) ? "Too Many DVDs" : "Valid No. of DVDs"
                               });
             return View(memberLoanStatus);
         }
