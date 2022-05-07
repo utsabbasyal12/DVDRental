@@ -459,9 +459,7 @@ namespace DVDRental.Controllers
             {
                 var castMembers = _context.CastMembers.ToList();
                 var dvdTitles = _context.DVDTitles.ToList();
-                var lastNo = castMembers?.OrderBy(cm => cm.Id).LastOrDefault().Id;
-                int ln = 0;
-                ln = lastNo?? 0;
+                var lastNo =  (castMembers.Count() ==0)? 0: castMembers.OrderBy(cm => cm.Id).LastOrDefault().Id;
                 
 
                 var actorExists = (from dt in dvdTitles.Where(dt => dt.DVDNumber == dvdID)
@@ -474,7 +472,7 @@ namespace DVDRental.Controllers
                     CastMember cmem = new CastMember();
                     cmem.DVDNumber = dvdID;
                     cmem.ActorId = actorID;
-                    cmem.Id = ln + 1;
+                    cmem.Id = lastNo + 1;
                     _context.Add(cmem);
                     await _context.SaveChangesAsync();
 
