@@ -15,7 +15,7 @@
     </div>
 }
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 mb-3">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -48,7 +48,7 @@
                 <input asp-for="ProducerName" class="form-control" />
 
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="CategoryNumber" class="control-label"></label>
                 <select asp-for="CategoryNumber" class ="form-control" asp-items="ViewBag.CategoryNumber"></select>
             </div>
@@ -59,8 +59,8 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="mb-3">
+    <a class="btn btn-secondary" asp-action="Index"><i class="bi bi-backspace"></i> Back to List</a>
 </div>
 <script type="text/javascript">
         @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)

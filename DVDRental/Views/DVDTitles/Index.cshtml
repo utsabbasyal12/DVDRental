@@ -117,15 +117,12 @@
                             <p class="card-text">
                                 <a class="btn btn-outline-primary float-left" asp-action="Details" asp-route-id="@item.DVDNumber">
                                     <i class="bi bi-eye-fill"></i> Show Details
-                                </a>
-                                 @if (User.Identity.IsAuthenticated)
-                                    {
+                                </a>                              
                                   <a class="btn btn-outline-danger float-right" asp-action="Delete" asp-route-id="@item.DVDNumber">
                                       <i class="bi bi-trash"></i>Delete
                                       </a>
-        <a asp-action="AddCast" asp-route-id="@item.DVDNumber">Add Cast </a>
+                                    <a class="btn btn-outline-success" asp-action="AddCast" asp-route-id="@item.DVDNumber"><i class="bi bi-plus-circle"></i>Add Cast </a>
 
-                                    }
                                @* <a class="btn btn-success text-white @((DateTime.Now > item.EndDate) ? "disabled" : "")" 
                                    asp-controller="Orders" 
                                    asp-action="AddItemToShoppingCart" 

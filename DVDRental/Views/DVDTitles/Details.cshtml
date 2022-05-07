@@ -90,19 +90,6 @@
                         <p class="card-text"><b>Release Date: </b>@Model.DateRelease.ToString("dd MMM yy")</p>
                         <p class="card-text"><b>Standard Charge: </b>@Model.StandardCharge.ToString()</p>
                         <p class="card-text"><b>Penalty Charge: </b>@Model.PenaltyCharge.ToString()</p>
-                       @* <p class="card-text">
-                            <b>Actors: </b>
-                            <hr />
-                            <div class="row">
-                                @foreach (var actor in Model.CastMembers)
-                                {
-                                    <div class="column text-center">
-                                        <a asp-controller="Actors" asp-action="Details" asp-route-id="@actor.ActorId">@actor.Actor.ActorId</a>
-                                    </div>
-                                }
-                            </div>
-                        </p>*@
-
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -111,9 +98,6 @@
                             <a class="btn btn-outline-primary float-right" asp-action="Index">
                                 Back to List
                             </a>
-                           @* <a class="btn btn-success text-white  @((DateTime.Now > Model.EndDate) ? "disabled" : "")" 
-                               asp-controller="Orders" 
-                               asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id"><i class="bi bi-cart-plus"></i> Add to Cart (Price @Model.Price.ToString("c"))</a>*@
                         </p>
                     </div>
                 </div>

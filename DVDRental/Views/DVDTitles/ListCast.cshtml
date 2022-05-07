@@ -4,7 +4,7 @@
     ViewData["Title"] = "Titles and CastMembers";
 }
 
-<h1>Index</h1>
+<h1>List of Cast Members</h1>
 
 <form asp-controller="DVDTitles" asp-action="ListCast">
 @*    <p>
@@ -12,8 +12,8 @@
         <input type="submit" value="Filter" />
     </p>*@
 </form>
-<table class="table">
-    <thead>
+<table class="table table-primary table-hover float-center" style="width:auto">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.DVDTitle)
