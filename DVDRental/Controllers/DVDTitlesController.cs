@@ -34,7 +34,6 @@ namespace DVDRental.Controllers
             var dvdTitle = _context.DVDTitles.ToList();
             var castMember = _context.CastMembers.ToList();
             var actor = _context.Actors.ToList();
-
             var dvdTitlesWithSelectedActor = (from dvd in dvdTitle
                                                   //join cast in castMember
                                                   //on dvd.DVDNumber equals cast.DVDNumber
@@ -64,11 +63,6 @@ namespace DVDRental.Controllers
                 //linq1 start
                 //var shopList = _context.Shop.ToList();
 
-                var dvdTitles = dvdCopyList.Join(dvdTitle,
-                            dvdCopy => dvdCopy.DVDNumber,
-                            dvdTitle => dvdTitle.DVDNumber,
-                            (dvdCopy, dvdTitle) => dvdTitle
-                            ).Distinct();
 
                 var requestActorNumber = searchString;
 
@@ -114,12 +108,22 @@ namespace DVDRental.Controllers
             var dvdTitle = _context.DVDTitles.ToList();
             var castMember = _context.CastMembers.ToList();
             var actor = _context.Actors.ToList();
+            var loans = _context.Loans.ToList();
+            //var selectedActorID = actor.Where(a => a.ActorSurname == searchString).FirstOrDefault().ActorId;
+            var loanedCopies = (from c in dvdCopyList
+                                join l in loans.Where(l => l.DateRetured == null)
+                                on c.CopyNumber equals l.CopyNumber
+                                select c).ToList();
+            dvdCopyList = dvdCopyList.Except(loanedCopies).ToList();
+            var dvdTitles = dvdCopyList.Join(dvdTitle,
+                            dvdCopy => dvdCopy.DVDNumber,
+                            dvdTitle => dvdTitle.DVDNumber,
+                            (dvdCopy, dvdTitle) => dvdTitle
+                            ).Distinct();
 
             var dvdCopiesWithSelectedActor = (from dvdCopy in dvdCopyList
                                               join dvd in dvdTitle
                                               on dvdCopy.DVDNumber equals dvd.DVDNumber
-                                              join cast in castMember
-                                              on dvd.DVDNumber equals cast.DVDNumber
                                               select new DVDTitleSearchCopyVM
                                               {
                                                   //Actor = act.ActorSurname,
@@ -137,11 +141,6 @@ namespace DVDRental.Controllers
                 //linq1 start
                 //var shopList = _context.Shop.ToList();
 
-                var dvdTitles = dvdCopyList.Join(dvdTitle,
-                            dvdCopy => dvdCopy.DVDNumber,
-                            dvdTitle => dvdTitle.DVDNumber,
-                            (dvdCopy, dvdTitle) => dvdTitle
-                            ).Distinct();
 
                 dvdCopiesWithSelectedActor = (from dvdCopy in dvdCopyList
                                               join dvd in dvdTitle
