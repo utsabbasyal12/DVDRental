@@ -4,14 +4,14 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Actors</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i>Add New</a>
 </p>
 
-<table class="table">
-    <thead>
+<table class="table table-primary table-hover float-center" style="width:50%">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.ActorSurname)
@@ -32,9 +32,9 @@
                 @Html.DisplayFor(modelItem => item.ActorFirstName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ActorId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ActorId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ActorId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.ActorId" class="btn btn-warning">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ActorId" class="btn btn-secondary">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ActorId" class="btn btn-danger">Delete</a>
             </td>
         </tr>
 }

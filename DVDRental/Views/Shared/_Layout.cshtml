@@ -1,6 +1,6 @@
 ﻿@using DVDRental.Areas.Identity.Data
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<DVDRentalUser> SignInManager
+@inject SignInManager<ApplicationUser> SignInManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DVDRental.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
 </head>
 <body>
     <header>
@@ -22,14 +23,21 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>*@
                          @if (SignInManager.IsSignedIn(User))
                         {
+                            //DVDTitles
+                             <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    DVD Titles
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="DVDTitles" asp-action="Index">DVD Titles</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="DVDTitles" asp-action="ListCast">Cast Members</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="DVDTitles" asp-action="SearchDVDCopies">Search DVD Copies</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="DVDTitles" asp-action="OldCopies">Old DVD Copies</a></li>
+                                    
+                                </ul>
+                            </li>
                             //DVD dropdown
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -43,6 +51,20 @@
                                 </ul>
                             </li>
 
+                            //DVDCopies
+                             <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    DVD Copy
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="DVDCopies" asp-action="Index">DVD Copies</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="DVDCopies" asp-action="LoanedCopies">Loaned Copies</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="DVDCopies" asp-action="UnLoanedCopies">UnLoaned Copies</a></li>
+
+                                </ul>
+                            </li>
+
+
                             //Member dropdown
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -51,6 +73,8 @@
                                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                                     <li><a class="dropdown-item"  asp-area="" asp-controller="Members" asp-action="Index">Members</a></li>
                                     <li><a class="dropdown-item"  asp-area="" asp-controller="MembershipCategories" asp-action="Index">Member Category</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="Members" asp-action="SearchMemberLoan">Search Member Loan</a></li>
+                                    
                                 </ul>
                             </li>
 
@@ -64,12 +88,16 @@
                                     <li><a class="dropdown-item"  asp-area="" asp-controller="Loantypes" asp-action="Index">Loan Category</a></li>
                                 </ul>
                             </li>
-
+                        }
+                            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
+                        {
+                            
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="Index">DVD Titles</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="Index">User Management</a>
 
                             </li>
                         }
+
 
                     </ul>
                 </div>
@@ -84,11 +112,6 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - DVDRental - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
