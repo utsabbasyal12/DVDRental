@@ -35,13 +35,21 @@
             </th>           
             <th>
                 @Html.DisplayNameFor(model => model.MemberLastName)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CopyCount)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+@foreach (var itemList in Model) {
+    int CopyCount = itemList.CopyCount ?? 0;
+
+            @foreach (var item in itemList.loanedCopiesVMs)
+            {
+            <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.CopyNumber)
             </td>
@@ -57,7 +65,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.MemberLastName)
             </td>
+            <th>
+                @Html.DisplayFor(modelItem => CopyCount)
+            </th>
         </tr>
+                
+            }
 }
     </tbody>
 

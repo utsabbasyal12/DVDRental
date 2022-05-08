@@ -6,6 +6,11 @@
         public string? MemberFirstName { get; set; }
         public string? MemberLastName { get; set; }
         public int? CopyNumber { get; set; }
+        public int? CopyCount { get; set; }
         public DateTime? DateOut { get; set; }
+
+        public List<LoanedCopiesVM>? loanedCopiesVMs { get; set; }
     }
+
+
 }
