@@ -70,9 +70,9 @@ namespace DVDRental.Controllers
                 var memberLastName = searchString;
                 var currentDate = DateTime.Now;
 
-               memberLoans = from m in members.Where(m => m.MemberLastName == memberLastName)
+               memberLoans = from m in members.Where(m => m.MemberLastName.ToLower() == memberLastName.ToLower())
                               join l in loan
-                              .Where(l => l.DateOut.Subtract(currentDate).TotalDays <= 31)
+                              .Where(l => currentDate.Subtract(l.DateOut).TotalDays <= 31)
                               on m.MemberNumber equals l.MemberNumber
                               join dc in dvdCopyList
                               on l.CopyNumber equals dc.CopyNumber
@@ -126,7 +126,7 @@ namespace DVDRental.Controllers
 
 
             var memberLoanStatus = (from m in members
-                              join l in loan.Where(l=>l.DateRetured==null)
+                              join l in loan
                               on m.MemberNumber equals l.MemberNumber
                               join mCat in _context.MembershipCategories.ToList()
                               on m.MembershipCategoryNumber equals mCat.MembershipCategoryNumber
@@ -136,6 +136,7 @@ namespace DVDRental.Controllers
                                   MemberFirstName = m.MemberFirstName,
                                   MemberLastName = m.MemberLastName,
                                   MemberAddress = m.MemberAddress,
+                                  DateReturned = l.DateRetured,
                                   MemberDOB = m.MemberDOB,
                                   MembershipCategory = mCat.MembershipCategoryDescription.ToString(),
                                   CategoryTotalLoans = mCat.MembershipCategoryTotalLoans
@@ -149,8 +150,8 @@ namespace DVDRental.Controllers
                                   MemberDOB = g.FirstOrDefault().MemberDOB,
                                   MembershipCategory = g.FirstOrDefault().MembershipCategory,
                                   CategoryTotalLoans = g.FirstOrDefault().CategoryTotalLoans,
-                                  MemberLoanCount = g.Count(),
-                                  Remark = (g.FirstOrDefault().CategoryTotalLoans < g.Count()) ? "Too Many DVDs" : "Valid No. of DVDs"
+                                  MemberLoanCount = g.Count(l => l.DateReturned == null),
+                                  Remark = (g.FirstOrDefault().CategoryTotalLoans < g.Count(l => l.DateReturned == null)) ? "Too Many DVDs" : "Valid No. of DVDs"
                               });
             return View(memberLoanStatus);
         }

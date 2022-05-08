@@ -91,29 +91,42 @@ namespace DVDRental.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> LoanedCopies()
+        public async Task<IActionResult> LoanedCopies(string orderByOption)
         {
             var dvdCopies = _context.DVDCopies.ToList();
             var dvdTitles = _context.DVDTitles.ToList();
             var loans = _context.Loans.ToList();
             var members = _context.Members.ToList();
-
             var LoanedCopyDetails = (from dc in dvdCopies
-                                     join l in loans.Where(l => l.DateRetured == null)
-                                     on dc.CopyNumber equals l.CopyNumber
-                                     join dt in dvdTitles
-                                     on dc.DVDNumber equals dt.DVDNumber
-                                     join m in members
-                                     on l.MemberNumber equals m.MemberNumber
+                                    join l in loans.Where(l => l.DateRetured == null)
+                                    on dc.CopyNumber equals l.CopyNumber
+                                    join dt in dvdTitles
+                                    on dc.DVDNumber equals dt.DVDNumber
+                                    join m in members
+                                    on l.MemberNumber equals m.MemberNumber
 
-                                     select new LoanedCopiesVM
-                                     {
-                                         DVDTitle = dt.Title,
-                                         DateOut = l.DateOut,
-                                         CopyNumber = dc.CopyNumber,
-                                         MemberFirstName = m.MemberFirstName,
-                                         MemberLastName = m.MemberLastName,
-                                     }).OrderBy(x=>x.DateOut).ThenBy(x=>x.DVDTitle);
+                                    select new LoanedCopiesVM
+                                    {
+                                        DVDTitle = dt.Title,
+                                        DateOut = l.DateOut,
+                                        CopyNumber = dc.CopyNumber,
+                                        MemberFirstName = m.MemberFirstName,
+                                        MemberLastName = m.MemberLastName,
+                                    });
+
+            orderByOption = orderByOption ?? "orderByTitle";
+
+            if (orderByOption=="orderByDate")
+            {
+                LoanedCopyDetails = LoanedCopyDetails.OrderBy(x => x.DateOut).ThenBy(x => x.DVDTitle);
+            }
+
+            else if (orderByOption != null && orderByOption == "orderByTitle")
+            {
+                LoanedCopyDetails = LoanedCopyDetails.OrderBy(x => x.DVDTitle).ThenBy(x => x.DateOut);
+            }
+            
+
       
             return View(LoanedCopyDetails);
         }
