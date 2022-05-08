@@ -24,7 +24,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDTitles
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -99,7 +99,7 @@ namespace DVDRental.Controllers
         }
 
         //Feature 2
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> SearchDVDCopies(string searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -223,7 +223,7 @@ namespace DVDRental.Controllers
 
 
         // GET: DVDTitles/Details/5
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

@@ -6,16 +6,16 @@
 
 <h1>Loaned Copies List</h1>
 
-<form asp-controller="DVDCopies" asp-action="LoanedCopies">
-<select name="orderByOption">
-    <option value="orderByDate">
+<form asp-controller="DVDCopies" asp-action="LoanedCopies" class="mb-3">
+<select name="orderByOption" class="btn btn-primary">
+    <option value="orderByDate" class="btn btn-primary">
         Date
 </option>
-<option value="orderByTitle">
+<option value="orderByTitle" class="btn btn-primary">
     Title
 </option>
 </select>
-<input type="submit" value="Filter"></input>
+<input type="submit" value="Filter" class="btn btn-secondary"></input>
 </form>
 
 <table class="table table-primary table-hover float-center" style="width:50%">

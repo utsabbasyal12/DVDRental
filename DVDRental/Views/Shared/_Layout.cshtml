@@ -93,8 +93,17 @@
                         {
                             
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="Index">User Management</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">User Management</a>
 
+                            </li>
+                        }
+                        else
+                        {
+                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="Index">DVD Titles</a>
+                            </li>
+                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="SearchDVDCopies">DVD Search Copies</a>
                             </li>
                         }
 

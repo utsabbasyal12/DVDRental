@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using DVDRental.Models.ViewModels;
 
 namespace DVDRental.Areas.Identity.Data;
 
@@ -47,6 +48,8 @@ public class AppDBContext : IdentityDbContext<ApplicationUser>
 
         builder.ApplyConfiguration(new ApplicationUserEntityCongiguration());
     }
+
+    public DbSet<DVDRental.Models.ViewModels.UserDetailsViewModel> UserDetailsViewModel { get; set; }
 
     
 }
