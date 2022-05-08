@@ -1,4 +1,5 @@
-﻿using DVDRental.Models;
+﻿using DVDRental.Areas.Identity.Data;
+using DVDRental.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace DVDRental.Seed
@@ -26,12 +27,48 @@ namespace DVDRental.Seed
                 var user = await userManager.FindByEmailAsync(defaultUser.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser, "123Pa$$word.");
+                    await userManager.CreateAsync(defaultUser, "Manager@123");
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Manager.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Staff.ToString());
                 }
 
             }
         }
+
+        /* private static async Task CreateRoles(AppDBContext context, IServiceProvider serviceProvider)
+         {
+             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+             // First, Creating User role as each role in User Manager  
+             List<IdentityRole> roles = new List<IdentityRole>();
+             roles.Add(new IdentityRole { Name = "Manager", NormalizedName = "ADMINISTRATOR" });
+             roles.Add(new IdentityRole { Name = "Staff", NormalizedName = "MEMBER" });
+
+             //Then, the machine added Default User as the Admin user role
+             foreach (var role in roles)
+             {
+                 var roleExit = await roleManager.RoleExistsAsync(role.Name);
+                 if (!roleExit)
+                 {
+                     context.Roles.Add(role);
+                     context.SaveChanges();
+                 }
+             }
+             //Next, I create an Admin Super User who will maintain the LMS website panel
+             var userAdmin = new ApplicationUser()
+             {
+                 UserName = "Utsav",
+                 Email = "manager@gmail.com",
+             };
+             string userPWD = "Manager@123";
+             var chkUser = userManager.AddPasswordAsync(userAdmin, userPWD);
+             if (chkUser.IsFaulted)
+             {
+                 await roleManager.CreateAsync(new IdentityRole { Name = "Manager", NormalizedName = "ADMINISTRATOR" });
+             }
+             userAdmin = await userManager.FindByNameAsync("Utsav");
+             await userManager.AddToRoleAsync(userAdmin, "Manager");
+             //await userManager.AddToRoleAsync(user, "Admin");
+         }*/
     }
 }
