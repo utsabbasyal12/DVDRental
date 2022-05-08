@@ -26,10 +26,7 @@ namespace DVDRental.Controllers
         [Authorize]
         public async Task<IActionResult> Index(int searchString)
         {
-            //var user = UserManager.FindById(User.Identity.GetUserId());
             var dvdCopyList = _context.DVDCopies.ToList();
-            //var userDetails = "HIVE MAGICK FUCKERY";
-            //var userShopID = userDetails.ShopID;
             var dvdTitle = _context.DVDTitles.ToList();
             var member = _context.Members.ToList();
             var actor = _context.Actors.ToList();

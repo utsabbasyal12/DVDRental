@@ -12,13 +12,14 @@ namespace DVDRental.Seed
             await roleManager.CreateAsync(new IdentityRole(Enums.Roles.Manager.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Enums.Roles.Staff.ToString()));
         }
-        public static async Task SeedManagerAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedSuperAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             //Seed Default User
             var defaultUser = new ApplicationUser
             {
-                UserName = "manager",
-                Email = "manager@gmail.com",
+                UserName = "admin",
+                Email = "admin@gmail.com",
+               
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };
@@ -27,7 +28,7 @@ namespace DVDRental.Seed
                 var user = await userManager.FindByEmailAsync(defaultUser.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser, "Manager@123");
+                    await userManager.CreateAsync(defaultUser, "Admin@123");
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Manager.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Staff.ToString());
                 }

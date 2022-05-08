@@ -86,7 +86,7 @@
                                 @Model.Producers.ProducerName
                             </a>
                         </p>
-                        <p class="card-text"><b>Category: </b>@Model.DVDCategory</p>
+                        <p class="card-text"><b>Category: </b>@Model.DVDCategory.CategoryDescription</p>
                         <p class="card-text"><b>Release Date: </b>@Model.DateRelease.ToString("dd MMM yy")</p>
                         <p class="card-text"><b>Standard Charge: </b>@Model.StandardCharge.ToString()</p>
                         <p class="card-text"><b>Penalty Charge: </b>@Model.PenaltyCharge.ToString()</p>
@@ -95,8 +95,7 @@
                 <div class="col-md-12">
                     <div class="card-footer">
                         <p class="card-text">
-                            <a class="btn btn-outline-primary float-right" asp-action="Index">
-                                Back to List
+                            <a class="btn btn-secondary" asp-action="Index"><i class="bi bi-backspace"></i>Back to List
                             </a>
                         </p>
                     </div>
