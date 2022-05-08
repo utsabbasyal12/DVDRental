@@ -15,6 +15,7 @@ namespace DVDRental.Controllers
         {
             this.userManager = userManager; 
         }
+        [HttpGet]
         public IActionResult UserDetails()
         {
             var users = userManager.Users.ToList();
@@ -32,6 +33,8 @@ namespace DVDRental.Controllers
                 return View("Not found");
             }
 
+
+
             // GetClaimsAsync retunrs the list of user Claims
             var userClaims = await userManager.GetClaimsAsync(user);
             // GetRolesAsync returns the list of user Roles
@@ -42,11 +45,47 @@ namespace DVDRental.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
+                ShopName = user.ShopName,
+                Password = user.Password,
                 Claims = userClaims.Select(c => c.Value).ToList(),
                 Roles = userRoles
             };
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.Id);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {model.Id} cannot be found";
+                return View("NotFound");
+            }
+            else
+            {
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+                user.ShopName = model.ShopName;
+                user.Password = model.Password;
+                //user.City = model.City;
+
+                var result = await userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("UserDetails");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                return View(model);
+            }
         }
     }
 }

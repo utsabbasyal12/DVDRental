@@ -15,11 +15,14 @@ namespace DVDRental.Models.ViewModels
         [Required]
         public string UserName { get; set; }
 
+        public string ShopName { get; set; }
+
+        public string Password { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }
 
-        public string City { get; set; }
+        //public string City { get; set; }
 
         public List<string> Claims { get; set; }
 
