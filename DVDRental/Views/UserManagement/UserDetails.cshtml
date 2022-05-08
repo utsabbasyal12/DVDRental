@@ -1,12 +1,10 @@
-﻿<h1>Hello Admin</h1>
-
-@model IEnumerable<ApplicationUser>
+﻿@model IEnumerable<ApplicationUser>
 
 @{
     ViewBag.Title = "All Users";
 }
 
-<h1>All Users</h1>
+<h1>Edit User</h1>
 
 @if (Model.Any())
 {
@@ -25,7 +23,7 @@
                 <h5 class="card-title">@user.UserName</h5>
             </div>
             <div class="card-footer">
-                <a href="#" class="btn btn-danger">Edit</a>
+                <a asp-action="EditUser" asp-controller="UserManagement" asp-route-id="@user.Id" class="btn btn-warning">Edit</a>
                 <a href="#" class="btn btn-danger">Delete</a>
             </div>
         </div>
