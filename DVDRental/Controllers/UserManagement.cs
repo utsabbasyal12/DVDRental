@@ -4,16 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DVDRental.Controllers
 {
-    
-    public class Authentication : Controller
+    public class UserManagement : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
 
-        public Authentication(UserManager<ApplicationUser> userManager)
+        public UserManagement(UserManager<ApplicationUser> userManager)
         {
             this.userManager = userManager; 
         }
-        public IActionResult Index()
+        public IActionResult UserDetails()
         {
             var users = userManager.Users.ToList();
             return View(users);
