@@ -8,17 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AppDB"); ;
 
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseSqlServer(connectionString)); ;
+    options.UseSqlServer(connectionString));;
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<AppDBContext>()
         .AddDefaultUI()
 .AddDefaultTokenProviders();
-
-/*builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<AppDBContext>()
-    .AddDefaultUI()
-    .AddDefaultTokenProviders();*/
 
 builder.Services.AddAuthorization(options =>
 {

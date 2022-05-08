@@ -23,7 +23,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Staff"))
+                         @if (SignInManager.IsSignedIn(User))
                         {
                             //DVDTitles
                              <li class="nav-item dropdown">
@@ -103,7 +103,7 @@
                 </div>
                 <partial name="_LoginPartial"/>
             </div>
-        </nav>
+        </nav>  
     </header>
 
     <div class="container">
