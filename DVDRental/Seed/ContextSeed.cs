@@ -29,6 +29,7 @@ namespace DVDRental.Seed
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "Admin@123");
+
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Manager.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Staff.ToString());
                 }
