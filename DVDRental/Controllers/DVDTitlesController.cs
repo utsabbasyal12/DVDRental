@@ -172,8 +172,6 @@ namespace DVDRental.Controllers
         public async Task<IActionResult> ListCast()
         {
             var dvdCopyList = _context.DVDCopies.ToList();
-            //var userDetails = "HIVE MAGICK FUCKERY";
-            //var userShopID = userDetails.ShopID;
             var dvdTitle = _context.DVDTitles.ToList();
             var castMember = _context.CastMembers.ToList();
             var actor = _context.Actors.ToList();
