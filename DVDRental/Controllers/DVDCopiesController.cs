@@ -26,10 +26,7 @@ namespace DVDRental.Controllers
         [Authorize]
         public async Task<IActionResult> Index(int searchString)
         {
-            //var user = UserManager.FindById(User.Identity.GetUserId());
             var dvdCopyList = _context.DVDCopies.ToList();
-            //var userDetails = "HIVE MAGICK FUCKERY";
-            //var userShopID = userDetails.ShopID;
             var dvdTitle = _context.DVDTitles.ToList();
             var member = _context.Members.ToList();
             var actor = _context.Actors.ToList();
@@ -91,31 +88,71 @@ namespace DVDRental.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> LoanedCopies()
+        public async Task<IActionResult> LoanedCopies(string orderByOption)
         {
             var dvdCopies = _context.DVDCopies.ToList();
             var dvdTitles = _context.DVDTitles.ToList();
             var loans = _context.Loans.ToList();
             var members = _context.Members.ToList();
+            IEnumerable<LoanedCopiesVM> LoanedCopyDetails = null;
 
-            var LoanedCopyDetails = (from dc in dvdCopies
-                                     join l in loans.Where(l => l.DateRetured == null)
-                                     on dc.CopyNumber equals l.CopyNumber
-                                     join dt in dvdTitles
-                                     on dc.DVDNumber equals dt.DVDNumber
-                                     join m in members
-                                     on l.MemberNumber equals m.MemberNumber
+            orderByOption = orderByOption ?? "orderByTitle";
 
-                                     select new LoanedCopiesVM
+            if (orderByOption == "orderByDate")
+            {
+                //LoanedCopyDetails = LoanedCopyDetails.OrderBy(x => x.loanedCopiesVMs.First().DateOut?.Date).ThenBy(x => x.loanedCopiesVMs.First().DVDTitle);
+                LoanedCopyDetails = (from dc in dvdCopies
+                 join l in loans.Where(l => l.DateRetured == null)
+                 on dc.CopyNumber equals l.CopyNumber
+                 join dt in dvdTitles
+                 on dc.DVDNumber equals dt.DVDNumber
+                 join m in members
+                 on l.MemberNumber equals m.MemberNumber
+                 select new LoanedCopiesVM
+                 {
+                     DVDTitle = dt.Title,
+                     DateOut = l.DateOut,
+                     CopyNumber = dc.CopyNumber,
+                     MemberFirstName = m.MemberFirstName,
+                     MemberLastName = m.MemberLastName,
+                 }).GroupBy(x => x.DateOut?.Date)
+                                     .Select(g => new LoanedCopiesVM
                                      {
-                                         DVDTitle = dt.Title,
-                                         DateOut = l.DateOut,
-                                         CopyNumber = dc.CopyNumber,
-                                         MemberFirstName = m.MemberFirstName,
-                                         MemberLastName = m.MemberLastName,
-                                     }).OrderBy(x=>x.DateOut).ThenBy(x=>x.DVDTitle);
-      
-            return View(LoanedCopyDetails);
+                                         CopyCount = g.Count(),
+                                         loanedCopiesVMs = g.OrderBy(x => x.DateOut).ToList()
+                                     }).OrderBy(x => x.loanedCopiesVMs.First().DateOut);
+
+            }
+
+            else if (orderByOption == "orderByTitle")
+            {
+                //LoanedCopyDetails = LoanedCopyDetails.OrderBy(x => x.loanedCopiesVMs.First().DVDTitle).ThenBy(x => x.loanedCopiesVMs.First().DateOut?.Date);
+                LoanedCopyDetails = (from dc in dvdCopies
+                 join l in loans.Where(l => l.DateRetured == null)
+                 on dc.CopyNumber equals l.CopyNumber
+                 join dt in dvdTitles
+                 on dc.DVDNumber equals dt.DVDNumber
+                 join m in members
+                 on l.MemberNumber equals m.MemberNumber
+                 select new LoanedCopiesVM
+                 {
+                     DVDTitle = dt.Title,
+                     DateOut = l.DateOut,
+                     CopyNumber = dc.CopyNumber,
+                     MemberFirstName = m.MemberFirstName,
+                     MemberLastName = m.MemberLastName,
+                 }).GroupBy(x => x.DateOut?.Date)
+                                     .Select(g => new LoanedCopiesVM
+                                     {
+                                         CopyCount = g.Count(),
+                                         loanedCopiesVMs = g.OrderBy(x => x.DVDTitle).ToList()
+                                     }).OrderBy(x => x.loanedCopiesVMs.First().DVDTitle);
+
+            }
+
+
+
+            return View(LoanedCopyDetails.ToList());
         }
 
         [Authorize]

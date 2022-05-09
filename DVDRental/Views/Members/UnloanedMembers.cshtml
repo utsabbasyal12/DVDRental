@@ -6,8 +6,8 @@
 
 <h1>Index</h1>
 
-<table class="table">
-    <thead>
+<table class="table table-primary table-hover float-center" style="width:auto">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.MemberFirstName)
@@ -27,7 +27,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.LoanedDays)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -47,7 +46,8 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateOut)
-            </td><td>
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.LoanedDays)
             </td>
             @*<td>

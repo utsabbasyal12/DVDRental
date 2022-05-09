@@ -24,7 +24,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: DVDTitles
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -104,7 +104,7 @@ namespace DVDRental.Controllers
         }
 
         //Feature 2
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> SearchDVDCopies(string searchString)
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
@@ -114,12 +114,21 @@ namespace DVDRental.Controllers
             var dvdTitle = _context.DVDTitles.ToList();
             var castMember = _context.CastMembers.ToList();
             var actor = _context.Actors.ToList();
+            var loans = _context.Loans.ToList();
+            var loanedCopies = (from c in dvdCopyList
+                                join l in loans.Where(l => l.DateRetured == null)
+                                on c.CopyNumber equals l.CopyNumber
+                                select c).ToList();
+            dvdCopyList = dvdCopyList.Except(loanedCopies).ToList();
+            var dvdTitles = dvdCopyList.Join(dvdTitle,
+                            dvdCopy => dvdCopy.DVDNumber,
+                            dvdTitle => dvdTitle.DVDNumber,
+                            (dvdCopy, dvdTitle) => dvdTitle
+                            ).Distinct();
 
             var dvdCopiesWithSelectedActor = (from dvdCopy in dvdCopyList
                                               join dvd in dvdTitle
                                               on dvdCopy.DVDNumber equals dvd.DVDNumber
-                                              join cast in castMember
-                                              on dvd.DVDNumber equals cast.DVDNumber
                                               select new DVDTitleSearchCopyVM
                                               {
                                                   //Actor = act.ActorSurname,
@@ -137,18 +146,13 @@ namespace DVDRental.Controllers
                 //linq1 start
                 //var shopList = _context.Shop.ToList();
 
-                var dvdTitles = dvdCopyList.Join(dvdTitle,
-                            dvdCopy => dvdCopy.DVDNumber,
-                            dvdTitle => dvdTitle.DVDNumber,
-                            (dvdCopy, dvdTitle) => dvdTitle
-                            ).Distinct();
 
                 dvdCopiesWithSelectedActor = (from dvdCopy in dvdCopyList
                                               join dvd in dvdTitle
                                               on dvdCopy.DVDNumber equals dvd.DVDNumber
                                               join cast in castMember
                                               on dvd.DVDNumber equals cast.DVDNumber
-                                              join act in actor.Where(x => x.ActorSurname == searchString)
+                                              join act in actor.Where(x => x.ActorSurname.ToLower() == searchString.ToLower())
                                               on cast.ActorId equals act.ActorId
 
                                               select new DVDTitleSearchCopyVM
@@ -224,7 +228,7 @@ namespace DVDRental.Controllers
 
 
         // GET: DVDTitles/Details/5
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -286,7 +290,7 @@ namespace DVDRental.Controllers
                 {
                     if (studioExists)
                     {
-                        studioID = studios.Where(s => s.StudioName == dVDTitleCreateVM.StudioName).FirstOrDefault().StudioId;
+                        studioID = studios.Where(s => s.StudioName.ToLower() == dVDTitleCreateVM.StudioName.ToLower()).FirstOrDefault().StudioId;
                     }
                     else
                     {
@@ -298,7 +302,7 @@ namespace DVDRental.Controllers
                     }
                     if (producerExists)
                     {
-                        producerID = producers.Where(p => p.ProducerName == dVDTitleCreateVM.ProducerName).FirstOrDefault().ProducerNumber;
+                        producerID = producers.Where(p => p.ProducerName.ToLower() == dVDTitleCreateVM.ProducerName.ToLower()).FirstOrDefault().ProducerNumber;
                     }
                     else
                     {
@@ -459,7 +463,8 @@ namespace DVDRental.Controllers
             {
                 var castMembers = _context.CastMembers.ToList();
                 var dvdTitles = _context.DVDTitles.ToList();
-                var lastNo = castMembers.OrderBy(cm => cm.Id).LastOrDefault().Id;
+                var lastNo =  (castMembers.Count() ==0)? 0: castMembers.OrderBy(cm => cm.Id).LastOrDefault().Id;
+                
 
                 var actorExists = (from dt in dvdTitles.Where(dt => dt.DVDNumber == dvdID)
                                    join cm in castMembers
@@ -480,7 +485,7 @@ namespace DVDRental.Controllers
 
             }
 
-            return View();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

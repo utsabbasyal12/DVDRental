@@ -109,7 +109,7 @@ namespace DVDRental.Migrations
 
                     b.HasKey("ActorId");
 
-                    b.ToTable("Actors");
+                    b.ToTable("Actors", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.CastMember", b =>
@@ -127,7 +127,7 @@ namespace DVDRental.Migrations
 
                     b.HasIndex("DVDNumber");
 
-                    b.ToTable("CastMembers");
+                    b.ToTable("CastMembers", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.DVDCategory", b =>
@@ -146,7 +146,7 @@ namespace DVDRental.Migrations
 
                     b.HasKey("CategoryNumber");
 
-                    b.ToTable("DVDCategory");
+                    b.ToTable("DVDCategory", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.DVDCopy", b =>
@@ -167,7 +167,7 @@ namespace DVDRental.Migrations
 
                     b.HasIndex("DVDNumber");
 
-                    b.ToTable("DVDCopies");
+                    b.ToTable("DVDCopies", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.DVDTitle", b =>
@@ -208,7 +208,7 @@ namespace DVDRental.Migrations
 
                     b.HasIndex("StudioId");
 
-                    b.ToTable("DVDTitles");
+                    b.ToTable("DVDTitles", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.Loan", b =>
@@ -245,7 +245,7 @@ namespace DVDRental.Migrations
 
                     b.HasIndex("MemberNumber");
 
-                    b.ToTable("Loans");
+                    b.ToTable("Loans", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.LoanType", b =>
@@ -264,7 +264,7 @@ namespace DVDRental.Migrations
 
                     b.HasKey("LoanTypeNumber");
 
-                    b.ToTable("LoanTypes");
+                    b.ToTable("LoanTypes", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.Member", b =>
@@ -296,7 +296,7 @@ namespace DVDRental.Migrations
 
                     b.HasIndex("MembershipCategoryNumber");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.MembershipCategory", b =>
@@ -315,7 +315,7 @@ namespace DVDRental.Migrations
 
                     b.HasKey("MembershipCategoryNumber");
 
-                    b.ToTable("MembershipCategories");
+                    b.ToTable("MembershipCategories", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.Producer", b =>
@@ -332,7 +332,7 @@ namespace DVDRental.Migrations
 
                     b.HasKey("ProducerNumber");
 
-                    b.ToTable("Producers");
+                    b.ToTable("Producers", (string)null);
                 });
 
             modelBuilder.Entity("DVDRental.Models.Studio", b =>
@@ -349,7 +349,7 @@ namespace DVDRental.Migrations
 
                     b.HasKey("StudioId");
 
-                    b.ToTable("Studios");
+                    b.ToTable("Studios", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -241,7 +241,7 @@ namespace DVDRental.Controllers
                  );
                     var penaltyCharge = dvdTitle.FirstOrDefault().PenaltyCharge;
                     //charge calculation
-                    var loanDuration = (loan.DateDue - loan.DateOut).TotalDays;
+                    var loanDuration = (DateTime.Now.Date - selectedLoanFirstOrDefault.DateDue.Date).TotalDays;
                     var penaltyAmount = loanDuration * (Decimal.ToDouble(penaltyCharge));
                     //var penaltyFlag = false;
                     if (selectedLoanFirstOrDefault.DateRetured == null) {
@@ -252,7 +252,7 @@ namespace DVDRental.Controllers
                         var dateComparision = DateTime.Compare(selectedLoanFirstOrDefault.DateDue.Date, (DateTime)selectedLoanFirstOrDefault.DateRetured?.Date);
                         if (dateComparision < 0)
                         {
-                            ModelState.AddModelError("Error", "DVD returned late! The total penalty amount is : " + penaltyCharge);
+                            ModelState.AddModelError("Error", "DVD returned late! The total penalty amount is : " + penaltyAmount);
                         }
                         else
                         {

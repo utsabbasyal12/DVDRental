@@ -4,13 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Loan Types</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i>Add New</a>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-primary table-hover float-center" style="width:50%">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.LoanCategory)
@@ -18,7 +18,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.LoanDuration)
             </th>
-            <th></th>
+        <th></th>
         </tr>
     </thead>
     <tbody>
@@ -31,9 +31,9 @@
                 @Html.DisplayFor(modelItem => item.LoanDuration)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.LoanTypeNumber">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.LoanTypeNumber">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.LoanTypeNumber">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.LoanTypeNumber" class="btn btn-warning">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.LoanTypeNumber" class="btn btn-secondary">Details</a> 
+                <a asp-action="Delete" asp-route-id="@item.LoanTypeNumber" class="btn btn-danger">Delete</a>
             </td>
         </tr>
 }

@@ -6,8 +6,20 @@
 
 <h1>Loaned Copies List</h1>
 
-<table class="table">
-    <thead>
+<form asp-controller="DVDCopies" asp-action="LoanedCopies" class="mb-3">
+<select name="orderByOption" class="btn btn-primary">
+    <option value="orderByDate" class="btn btn-primary">
+        Date
+</option>
+<option value="orderByTitle" class="btn btn-primary">
+    Title
+</option>
+</select>
+<input type="submit" value="Filter" class="btn btn-secondary"></input>
+</form>
+
+<table class="table table-primary table-hover float-center" style="width:50%">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.CopyNumber)
@@ -23,13 +35,20 @@
             </th>           
             <th>
                 @Html.DisplayNameFor(model => model.MemberLastName)
+
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.CopyCount)
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+@foreach (var itemList in Model) {
+    int CopyCount = itemList.CopyCount ?? 0;
+
+            @foreach (var item in itemList.loanedCopiesVMs)
+            {
+            <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.CopyNumber)
             </td>
@@ -45,7 +64,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.MemberLastName)
             </td>
+            <th>
+                @Html.DisplayFor(modelItem => CopyCount)
+            </th>
         </tr>
+                
+            }
 }
     </tbody>
+
 </table>
+
+

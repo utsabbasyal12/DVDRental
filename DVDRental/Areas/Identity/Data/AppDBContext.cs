@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using DVDRental.Models.ViewModels;
 
 namespace DVDRental.Areas.Identity.Data;
 
-public class AppDBContext : IdentityDbContext<DVDRentalUser>
+public class AppDBContext : IdentityDbContext<ApplicationUser>
 {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public AppDBContext(DbContextOptions<AppDBContext> options)
@@ -48,12 +49,14 @@ public class AppDBContext : IdentityDbContext<DVDRentalUser>
         builder.ApplyConfiguration(new ApplicationUserEntityCongiguration());
     }
 
+    public DbSet<DVDRental.Models.ViewModels.UserDetailsViewModel> UserDetailsViewModel { get; set; }
+
     
 }
 
-public class ApplicationUserEntityCongiguration : IEntityTypeConfiguration<DVDRentalUser>
+public class ApplicationUserEntityCongiguration : IEntityTypeConfiguration<ApplicationUser>
 {
-    public void Configure(EntityTypeBuilder<DVDRentalUser> builder)
+    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         //builder.Property(u => u.ShopNumber).HasMaxLength(10);
         builder.Property(u => u.ShopName).HasMaxLength(255);

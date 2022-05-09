@@ -4,10 +4,10 @@
     ViewData["Title"] = "UnLoaned Copies List";
 }
 
-<h1>Loaned Copies List</h1>
+<h1>Unloaned Copies List</h1>
 
-<table class="table">
-    <thead>
+<table class="table table-primary table-hover float-center" style="width:50%">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
@@ -21,7 +21,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.PenaltyCharge)
             </th>           
-            <th></th>
         </tr>
     </thead>
     <tbody>
