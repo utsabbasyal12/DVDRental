@@ -74,6 +74,8 @@
                                     <li><a class="dropdown-item"  asp-area="" asp-controller="Members" asp-action="Index">Members</a></li>
                                     <li><a class="dropdown-item"  asp-area="" asp-controller="MembershipCategories" asp-action="Index">Member Category</a></li>
                                     <li><a class="dropdown-item"  asp-area="" asp-controller="Members" asp-action="SearchMemberLoan">Search Member Loan</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="Members" asp-action="MemberLoanStatus">Member Loan Status</a></li>
+                                    <li><a class="dropdown-item"  asp-area="" asp-controller="Members" asp-action="UnloanedMembers">Unloaned Members</a></li>
                                     
                                 </ul>
                             </li>
@@ -93,8 +95,17 @@
                         {
                             
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="Index">User Management</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">User Management</a>
 
+                            </li>
+                        }
+                        else
+                        {
+                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="Index">DVD Titles</a>
+                            </li>
+                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DVDTitles" asp-action="SearchDVDCopies">DVD Search Copies</a>
                             </li>
                         }
 
