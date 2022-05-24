@@ -113,7 +113,7 @@ namespace DVDRental.Controllers
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
             var dvdCopyList = _context.DVDCopies.ToList();
-            //var userDetails = "HIVE MAGICK FUCKERY";
+            
             //var userShopID = userDetails.ShopID;
             var dvdTitle = _context.DVDTitles.ToList();
             var castMember = _context.CastMembers.ToList();

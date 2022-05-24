@@ -143,7 +143,7 @@ namespace DVDRental.Controllers
                         chargeFlag = true;
                         //return RedirectToAction(nameof(Index));
                     }
-                    else if (age < 18 && restricted != "NotRestricted" && (currentLoanCountInt < maxLoanInt))
+                    else if (age < 18 && restricted == "NotRestricted" && (currentLoanCountInt < maxLoanInt))
                     {
                         _context.Add(loan);
                         await _context.SaveChangesAsync();

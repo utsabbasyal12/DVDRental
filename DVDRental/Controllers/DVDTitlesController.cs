@@ -68,12 +68,12 @@ namespace DVDRental.Controllers
                             (dvdCopy, dvdTitle) => dvdTitle
                             ).Distinct();
 
-                var requestActorNumber = searchString;
+                var requestActorNumber = searchString.ToLower();
 
                 dvdTitlesWithSelectedActor = (from dvd in dvdTitle
                                               join cast in castMember
                                               on dvd.DVDNumber equals cast.DVDNumber
-                                              join act in actor.Where(x => x.ActorSurname == requestActorNumber)
+                                              join act in actor.Where(x => x.ActorSurname.ToLower() == requestActorNumber)
                                               on cast.ActorId equals act.ActorId
                                               join produc in _context.Producers.ToList()
                                             on dvd.ProducerNumber equals produc.ProducerNumber
@@ -107,7 +107,7 @@ namespace DVDRental.Controllers
         {
             //var user = UserManager.FindById(User.Identity.GetUserId());
             var dvdCopyList = _context.DVDCopies.ToList();
-            //var userDetails = "HIVE MAGICK FUCKERY";
+            
             //var userShopID = userDetails.ShopID;
             var dvdTitle = _context.DVDTitles.ToList();
             var castMember = _context.CastMembers.ToList();
@@ -175,7 +175,7 @@ namespace DVDRental.Controllers
         public async Task<IActionResult> ListCast()
         {
             var dvdCopyList = _context.DVDCopies.ToList();
-            //var userDetails = "HIVE MAGICK FUCKERY";
+            
             //var userShopID = userDetails.ShopID;
             var dvdTitle = _context.DVDTitles.ToList();
             var castMember = _context.CastMembers.ToList();
